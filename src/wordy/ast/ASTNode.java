@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 public abstract class ASTNode {
     /**
      * Returns all the children of this node (immediate children, not all descendants).
+     * 
      * @return A map whose values are child nodes, and whose keys are human-readable labels that
      *         uniquely identify each child node’s role.
      */
@@ -20,13 +21,11 @@ public abstract class ASTNode {
     /**
      * Translates this node and its descendants into Java code.
      */
-    public void compile(PrintWriter out) {
-        throw new UnsupportedOperationException("Compilation not implemented yet for " + getClass().getSimpleName());
-    }
+    public abstract void compile(PrintWriter out);
 
     /**
-     * Returns the set of all unique (by name) VariableNodes in this node's subtree. The results
-     * include this node itself if it is a VariableNode.
+     * Returns the set of all unique (by name) VariableNodes in this node's subtree. The results include
+     * this node itself if it is a VariableNode.
      */
     public Set<VariableNode> findAllVariables() {
         Set<VariableNode> results = new HashSet<>();
@@ -35,9 +34,9 @@ public abstract class ASTNode {
     }
 
     private void forEachVariable(Consumer<VariableNode> consumer) {
-        if(this instanceof VariableNode)
+        if (this instanceof VariableNode)
             consumer.accept((VariableNode) this);
-        for(var child : getChildren().values()) {
+        for (var child : getChildren().values()) {
             child.forEachVariable(consumer);
         }
     }
@@ -58,7 +57,7 @@ public abstract class ASTNode {
     private StringBuffer dump(StringBuffer out, String label, String indent, boolean lastChild) {
         out.append(indent);
 
-        if(label != null) {  // null label means root node
+        if (label != null) {  // null label means root node
             // Draw tree lines
             out.append(lastChild ? "└─" : "├─");
             indent += lastChild ? "  " : "│ ";
@@ -76,7 +75,7 @@ public abstract class ASTNode {
         out.append(describeAttributes());
         out.append('\n');
 
-        for(var childIter = getChildren().entrySet().iterator(); childIter.hasNext(); ) {
+        for (var childIter = getChildren().entrySet().iterator(); childIter.hasNext();) {
             var entry = childIter.next();
             entry.getValue().dump(out, entry.getKey(), indent, !childIter.hasNext());
         }

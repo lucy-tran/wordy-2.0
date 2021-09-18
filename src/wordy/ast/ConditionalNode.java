@@ -1,9 +1,9 @@
 package wordy.ast;
 
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Objects;
 
-import jdk.jshell.EvalException;
 import wordy.interpreter.EvaluationContext;
 
 import static wordy.ast.Utils.orderedMap;
@@ -86,12 +86,19 @@ public class ConditionalNode extends StatementNode {
         double right = rhs.doEvaluate(context);
         boolean result = false;
 
-        if (operator == Operator.LESS_THAN) {
-            result = (left < right);
-        } else if (operator == Operator.EQUALS) {
-            result = (left == right);
-        } else if (operator == Operator.GREATER_THAN) {
-            result = (left > right);
+        switch (operator) {
+            case LESS_THAN: {
+                result = (left < right);
+                break;
+            }
+            case EQUALS: {
+                result = (left == right);
+                break;
+            }
+            case GREATER_THAN: {
+                result = (left > right);
+                break;
+            }
         }
 
         if (result) {
@@ -99,5 +106,32 @@ public class ConditionalNode extends StatementNode {
         } else {
             ifFalse.doRun(context);
         }
+    }
+
+    @Override
+    public void compile(PrintWriter out) {
+        out.print("if(");
+        lhs.compile(out);
+
+        switch (operator) {
+            case LESS_THAN: {
+                out.print(" < ");
+                break;
+            }
+            case EQUALS: {
+                out.print(" == ");
+                break;
+            }
+            case GREATER_THAN: {
+                out.print(" > ");
+                break;
+            }
+        }
+
+        rhs.compile(out);
+        out.print(") ");
+        ifTrue.compile(out);
+        out.print("else ");
+        ifFalse.compile(out);
     }
 }

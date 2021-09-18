@@ -6,10 +6,24 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch ShaderUI",
+            "request": "launch",
+            "mainClass": "wordy.demo.shader.ShaderUI",
+            "projectName": "wordy-lucy-tran"
+        },
+        {
+            "type": "java",
+            "name": "Launch Playground",
+            "request": "launch",
+            "mainClass": "wordy.demo.Playground",
+            "projectName": "wordy-lucy-tran"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "vmArgs": "--illegal-access=permit"  // required for parboiled; see https://github.com/sirthias/parboiled/issues/175#issuecomment-878331837
+            "vmArgs": "--illegal-access=permit"
         },
         {
             "type": "java",
@@ -17,7 +31,7 @@
             "request": "launch",
             "mainClass": "wordy.demo.Playground",
             "projectName": "wordy",
-            "vmArgs": "--illegal-access=permit"  // required for parboiled; see https://github.com/sirthias/parboiled/issues/175#issuecomment-878331837
+            "vmArgs": "--illegal-access=permit"
         },
         {
             "type": "java",
@@ -25,7 +39,7 @@
             "request": "launch",
             "mainClass": "wordy.demo.shader.ShaderUI",
             "projectName": "wordy",
-            "vmArgs": "--illegal-access=permit"  // required for parboiled; see https://github.com/sirthias/parboiled/issues/175#issuecomment-878331837
+            "vmArgs": "--illegal-access=permit"
         }
     ]
 }
