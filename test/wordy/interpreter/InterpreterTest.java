@@ -9,7 +9,6 @@ import static wordy.parser.WordyParser.parseExpression;
 import static wordy.parser.WordyParser.parseProgram;
 import static wordy.parser.WordyParser.parseStatement;
 
-@Disabled
 public class InterpreterTest {
     private final EvaluationContext context = new EvaluationContext();
 
@@ -56,8 +55,7 @@ public class InterpreterTest {
 
     @Test
     void executeConditional() {
-        String program =
-            "if x is less than 12 then set lt to x else set lt to lt minus 1."
+        String program = "if x is less than 12 then set lt to x else set lt to lt minus 1."
             + "if x equals 12 then set eq to x else set eq to eq minus 1."
             + "if x is greater than 12 then set gt to x else set gt to gt minus 1.";
 
