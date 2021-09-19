@@ -6,20 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch ShaderUI",
-            "request": "launch",
-            "mainClass": "wordy.demo.shader.ShaderUI",
-            "projectName": "wordy-lucy-tran"
-        },
-        {
-            "type": "java",
-            "name": "Launch Playground",
-            "request": "launch",
-            "mainClass": "wordy.demo.Playground",
-            "projectName": "wordy-lucy-tran"
-        },
-        {
-            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}",
@@ -30,7 +16,6 @@
             "name": "Launch Playground",
             "request": "launch",
             "mainClass": "wordy.demo.Playground",
-            "projectName": "wordy",
             "vmArgs": "--illegal-access=permit"
         },
         {
@@ -38,7 +23,6 @@
             "name": "Launch ShaderUI",
             "request": "launch",
             "mainClass": "wordy.demo.shader.ShaderUI",
-            "projectName": "wordy",
             "vmArgs": "--illegal-access=permit"
         }
     ]

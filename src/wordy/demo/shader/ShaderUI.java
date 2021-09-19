@@ -35,10 +35,9 @@ public class ShaderUI {
 
     public static void main(String[] args) throws Exception {
         new ShaderUI(
-            "ripples.wordy",  // Simple test involving only assignments and expressions
-//            "mandel.wordy",   // More complex test involving loops and conditionals
-            600, 600
-        );
+            // "ripples.wordy", // Simple test involving only assignments and expressions
+            "mandel.wordy",   // More complex test involving loops and conditionals
+            600, 600);
     }
 
     public ShaderUI(String sourceFileName, int width, int height) throws Exception {
@@ -55,9 +54,9 @@ public class ShaderUI {
         window.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                double x = (e.getX() - window.getInsets().left) * pixelRatio - width  / 2;
-                double y = (e.getY() - window.getInsets().top)  * pixelRatio - height / 2;
-                double newScale = scale * (e.isAltDown() ? 3.0 : 1/3.0);
+                double x = (e.getX() - window.getInsets().left) * pixelRatio - width / 2;
+                double y = (e.getY() - window.getInsets().top) * pixelRatio - height / 2;
+                double newScale = scale * (e.isAltDown() ? 3.0 : 1 / 3.0);
                 centerX += x * (scale - newScale);
                 centerY += y * (scale - newScale);
                 scale = newScale;
@@ -88,13 +87,13 @@ public class ShaderUI {
                 ? new CompiledShader(program, scale)
                 : new InterpretedShader(program, scale));
 
-        synchronized(this) {
+        synchronized (this) {
             currentRenderer = renderer;
         }
 
         renderer.onProgress(() -> {
-            synchronized(this) {
-                if(renderer != currentRenderer) {
+            synchronized (this) {
+                if (renderer != currentRenderer) {
                     throw new ExecutionCancelledException();
                 }
             }
@@ -114,7 +113,7 @@ public class ShaderUI {
             this.pixelRatio = pixelRatio;
             pack();
             setSize(
-                image.getWidth()  / pixelRatio + getInsets().left + getInsets().right,
+                image.getWidth() / pixelRatio + getInsets().left + getInsets().right,
                 image.getHeight() / pixelRatio + getInsets().top + getInsets().bottom);
             setResizable(false);
             setVisible(true);
