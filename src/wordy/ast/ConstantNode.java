@@ -24,9 +24,9 @@ public final class ConstantNode extends ExpressionNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if(this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if(o == null || getClass() != o.getClass())
             return false;
         ConstantNode other = (ConstantNode) o;
         return Double.compare(this.value, other.value) == 0;
@@ -48,7 +48,7 @@ public final class ConstantNode extends ExpressionNode {
     }
 
     @Override
-    public double doEvaluate(EvaluationContext context) {
+    protected double doEvaluate(EvaluationContext context) {
         return value;
     }
 

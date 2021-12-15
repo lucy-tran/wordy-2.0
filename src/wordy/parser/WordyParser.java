@@ -20,6 +20,7 @@ import wordy.ast.ConstantNode;
 import wordy.ast.ExpressionNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
+import wordy.ast.RecordNode;
 import wordy.ast.StatementNode;
 import wordy.ast.VariableNode;
 
@@ -80,6 +81,7 @@ public class WordyParser extends BaseParser<ASTNode> {
                 list.get().add((StatementNode) pop())),
             push(new BlockNode(list.get())));
     }
+
 
     Rule Statement() {
         return FirstOf(
@@ -144,8 +146,18 @@ public class WordyParser extends BaseParser<ASTNode> {
             KeyPhrase("set"),
             Variable(),
             KeyPhrase("to"),
-            Expression(), // or a FunctionNode with a not-null returnType
+            Expression(),
             push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())));
+    }
+
+    Rule Record() {
+        Var<List<AssignmentNode>> list = new Var<>(new ArrayList<>());
+        return Sequence(KeyPhrase("{"),
+            OneOrMore(
+                Assignment(),
+                OptionalSurroundingSpace("."),
+                list.get().add((AssignmentNode) pop())),
+            push(new RecordNode(list.get())), KeyPhrase("}"));
     }
 
     Rule Expression() {

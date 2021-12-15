@@ -21,7 +21,6 @@ public final class LoopExitNode extends StatementNode {
     public Map<String, ASTNode> getChildren() {
         return Collections.emptyMap();
     }
-
     @Override
     public boolean equals(Object o) {
         return this == o
@@ -39,12 +38,12 @@ public final class LoopExitNode extends StatementNode {
     }
 
     @Override
-    public void doRun(EvaluationContext context) {
+    protected void doRun(EvaluationContext context) {
         throw new LoopExited();
     }
 
     @Override
     public void compile(PrintWriter out) {
-        out.print("break; ");
+        out.print("break;");
     }
 }

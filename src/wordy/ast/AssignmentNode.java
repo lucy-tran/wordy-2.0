@@ -18,8 +18,8 @@ public class AssignmentNode extends StatementNode {
     private final VariableNode variable;
 
     /**
-     * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to the
-     * LHS variable.
+     * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to
+     * the LHS variable.
      */
     private final ExpressionNode expression;
 
@@ -47,9 +47,9 @@ public class AssignmentNode extends StatementNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if(this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if(o == null || getClass() != o.getClass())
             return false;
         AssignmentNode that = (AssignmentNode) o;
         return variable.equals(that.variable)
@@ -70,15 +70,15 @@ public class AssignmentNode extends StatementNode {
     }
 
     @Override
-    public void doRun(EvaluationContext context) {
+    protected void doRun(EvaluationContext context) {
         context.set(variable.getName(), expression.doEvaluate(context));
     }
 
     @Override
     public void compile(PrintWriter out) {
         variable.compile(out);
-        out.print(" = ");
+        out.print("=");
         expression.compile(out);
-        out.print("; ");
+        out.print(";");
     }
 }

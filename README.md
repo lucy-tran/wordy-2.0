@@ -1,17 +1,6 @@
-# Wordy
+# Wordy 2.0
 
-Wordy is a toy programming language. We will do science to it.
-
-This project contains the beginning of a Wordy implementation in Java. The starter code provides you with a parser that translates Wordy source code into an AST. You will use that AST to implement an **interpreter** and a **compiler** for the language.
-
-
-## Learning Goals
-
-- Understand the difference between interpreters and compilers.
-- Understand how AST data structures relate to source code.
-- Practice writing code that processes code.
-- Think in detail about the semantics of basic language constructs.
-- Get a taste of the work involved in implementing a programming language.
+Wordy is a toy programming language for students in Programming Languages class to do science to. Wordy 2.0 is an improvement upon Wordy, with the addition of functions and records.
 
 
 ## Project setup
@@ -32,10 +21,3 @@ Now set up your development environment, using the Java development tool of your
 
 Any one of these tools will work fine. Pick the one you are most comfortable with (or the one you most want to learn more about!).
 
-
-## The assignment
-
-- Part 0: [Understand your starting point](docs/0-starting-point.md)
-- Part 1: [Implement an interpreter](docs/1-interpreter.md)
-- Part 2: [Implement a compiler](docs/2-compiler.md)
-- [Bonus challenges](3-bonus.md)

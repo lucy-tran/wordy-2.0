@@ -27,9 +27,9 @@ public class LoopNode extends StatementNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if(this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if(o == null || getClass() != o.getClass())
             return false;
         LoopNode loopNode = (LoopNode) o;
         return body.equals(loopNode.body);
@@ -46,19 +46,20 @@ public class LoopNode extends StatementNode {
     }
 
     @Override
-    public void doRun(EvaluationContext context) {
-        while (true) {
+    protected void doRun(EvaluationContext context) {
+        boolean loop = true;
+        while (loop) {
             try {
                 body.doRun(context);
-            } catch (LoopExited exception) {
-                break;
+            } catch (LoopExited e) {
+                loop = false;
             }
         }
     }
 
     @Override
     public void compile(PrintWriter out) {
-        out.print("while(true) ");
+        out.println("while(true)");
         body.compile(out);
     }
 }

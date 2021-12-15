@@ -11,17 +11,15 @@ import static wordy.ast.Utils.orderedMap;
 /**
  * A conditional (“If … then”) in a Wordy abstract syntax tree.
  * 
- * Wordy only supports direct comparisons between two numeric expressions, e.g. "If x is less than y
- * then….” Wordy does not support boolean operators, or arbitrary boolean expressions. The general
- * structure of a Wordy conditional is:
+ * Wordy only supports direct comparisons between two numeric expressions, e.g.
+ * "If x is less than y then….” Wordy does not support boolean operators, or arbitrary boolean
+ * expressions. The general structure of a Wordy conditional is:
  * 
- * If <lhs> <operator> <rhs> then <ifTrue> else <ifFalse>
+ *     If <lhs> <operator> <rhs> then <ifTrue> else <ifFalse>
  */
 public class ConditionalNode extends StatementNode {
     public enum Operator {
-        EQUALS,
-        LESS_THAN,
-        GREATER_THAN
+        EQUALS, LESS_THAN, GREATER_THAN
     }
 
     private final Operator operator;
@@ -47,10 +45,8 @@ public class ConditionalNode extends StatementNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         ConditionalNode that = (ConditionalNode) o;
         return this.operator == that.operator
             && this.lhs.equals(that.lhs)
@@ -81,55 +77,53 @@ public class ConditionalNode extends StatementNode {
     }
 
     @Override
-    public void doRun(EvaluationContext context) {
-        double left = lhs.doEvaluate(context);
-        double right = rhs.doEvaluate(context);
-        boolean result = false;
+    protected void doRun(EvaluationContext context) {
+        double rhs_value = rhs.doEvaluate(context);
+        double lhs_value = lhs.doEvaluate(context);
+        Boolean conditional_result = false;
 
-        switch (operator) {
-            case LESS_THAN: {
-                result = (left < right);
+        switch(operator) {
+            case EQUALS:
+                if(lhs_value == rhs_value)
+                conditional_result = true;
                 break;
-            }
-            case EQUALS: {
-                result = (left == right);
+            case LESS_THAN:
+                if(lhs_value < rhs_value)
+                conditional_result = true;
                 break;
-            }
-            case GREATER_THAN: {
-                result = (left > right);
+            case GREATER_THAN:
+                if(lhs_value > rhs_value)
+                conditional_result = true;
                 break;
-            }
         }
 
-        if (result) {
+        if (conditional_result)
             ifTrue.doRun(context);
-        } else {
+        else
             ifFalse.doRun(context);
-        }
     }
 
     @Override
     public void compile(PrintWriter out) {
         out.print("if(");
-        lhs.compile(out);
-
-        switch (operator) {
-            case LESS_THAN: {
-                out.print(" < ");
+        switch(operator) {
+            case EQUALS:
+                lhs.compile(out);
+                out.print("=");
+                rhs.compile(out);
                 break;
-            }
-            case EQUALS: {
-                out.print(" == ");
+            case LESS_THAN:
+                lhs.compile(out);
+                out.print("<");
+                rhs.compile(out);
                 break;
-            }
-            case GREATER_THAN: {
-                out.print(" > ");
+            case GREATER_THAN:
+                lhs.compile(out);
+                out.print(">");
+                rhs.compile(out);
                 break;
-            }
         }
-
-        rhs.compile(out);
-        out.print(") ");
+        out.print(")");
         ifTrue.compile(out);
         out.print("else ");
         ifFalse.compile(out);
