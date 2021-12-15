@@ -1,4 +1,4 @@
-# Wordy
+# Wordy 2.0
 
 Wordy is a toy programming language for students in Programming Languages class to do science to. Wordy 2.0 is an improvement upon Wordy, with the addition of functions and records.
 
