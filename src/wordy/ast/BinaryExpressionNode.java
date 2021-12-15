@@ -13,11 +13,7 @@ import static wordy.ast.Utils.orderedMap;
  */
 public class BinaryExpressionNode extends ExpressionNode {
     public enum Operator {
-        ADDITION,
-        SUBTRACTION,
-        MULTIPLICATION,
-        DIVISION,
-        EXPONENTIATION
+        ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, EXPONENTIATION
     }
 
     private final Operator operator;
@@ -38,9 +34,9 @@ public class BinaryExpressionNode extends ExpressionNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if(this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if(o == null || getClass() != o.getClass())
             return false;
         BinaryExpressionNode that = (BinaryExpressionNode) o;
         return this.operator == that.operator
@@ -68,67 +64,64 @@ public class BinaryExpressionNode extends ExpressionNode {
     }
 
     @Override
-    public double doEvaluate(EvaluationContext context) {
-        double left = lhs.doEvaluate(context);
-        double right = rhs.doEvaluate(context);
-
-        switch (this.operator) {
-            case ADDITION: {
-                return left + right;
-            }
-            case SUBTRACTION: {
-                return left - right;
-            }
-            case MULTIPLICATION: {
-                return left * right;
-            }
-            case DIVISION: {
-                return left / right;
-            }
-            case EXPONENTIATION: {
-                return Math.pow(left, right);
-            }
-            default: {
-                return 0;
-            }
+    protected double doEvaluate(EvaluationContext context) {
+        switch(operator) {
+            case ADDITION:
+                return rhs.evaluate(context) + lhs.evaluate(context);
+            case SUBTRACTION:
+                return lhs.evaluate(context) - rhs.evaluate(context);
+            case MULTIPLICATION:
+                return rhs.evaluate(context) * lhs.evaluate(context);
+            case DIVISION:
+                return lhs.evaluate(context) / rhs.evaluate(context);
+            case EXPONENTIATION:
+                return Math.pow(lhs.evaluate(context), rhs.evaluate(context));
         }
+        throw new UnsupportedOperationException("Unknown operator:" + operator);
     }
 
     @Override
     public void compile(PrintWriter out) {
-        if (operator != Operator.EXPONENTIATION) {
-            out.print("(");
-            lhs.compile(out);
-        }
-
-        switch (this.operator) {
-            case ADDITION: {
-                out.print(" + ");
+        switch(operator) {
+            case ADDITION:
+                out.print("(");
+                lhs.compile(out);
+                out.print("+"); 
+                rhs.compile(out);
+                out.print(")");
                 break;
-            }
-            case SUBTRACTION: {
-                out.print(" - ");
+            case SUBTRACTION:
+                out.print("(");
+                lhs.compile(out);
+                out.print("-"); 
+                rhs.compile(out);
+                out.print(")");
                 break;
-            }
-            case MULTIPLICATION: {
-                out.print(" * ");
+               
+            case MULTIPLICATION:
+                out.print("(");
+                lhs.compile(out);
+                out.print("*"); 
+                rhs.compile(out);
+                out.print(")");
                 break;
-            }
-            case DIVISION: {
-                out.print(" / ");
+               
+            case DIVISION:
+                out.print("(");
+                lhs.compile(out);
+                out.print("/"); 
+                rhs.compile(out);
+                out.print(")");
                 break;
-            }
-            case EXPONENTIATION: {
+                
+            case EXPONENTIATION:
                 out.print("Math.pow(");
                 lhs.compile(out);
-                out.print(", ");
+                out.print(","); 
+                rhs.compile(out);
+                out.print(")");
                 break;
-            }
+ 
         }
-
-        rhs.compile(out);
-
-        out.print(")");
-
     }
 }

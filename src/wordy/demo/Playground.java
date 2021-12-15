@@ -26,7 +26,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultHighlighter;
 
 import wordy.ast.StatementNode;
-import wordy.compiler.WordyCompiler;
 import wordy.interpreter.EvaluationContext;
 import wordy.parser.ParseException;
 import wordy.parser.WordyParser;
@@ -45,7 +44,6 @@ public class Playground {
     private final JTextArea codeEditor;
     private final JTextArea astDump;
     private final JTextArea interpreterDump;
-    private final JTextArea compilerDump;
     private StatementNode currentAST;
     private final Executor codeExecutionQueue = Executors.newFixedThreadPool(1);
 
@@ -75,18 +73,13 @@ public class Playground {
         interpreterDump = new JTextArea();
         interpreterDump.setEditable(false);
 
-        compilerDump = new JTextArea();
-        compilerDump.setEditable(false);
-
         styleTextArea(codeEditor);
         styleTextArea(astDump);
         styleTextArea(interpreterDump);
-        styleTextArea(compilerDump);
 
         JTabbedPane outputTabs = new JTabbedPane();
         outputTabs.add("AST", new JScrollPane(astDump));
         outputTabs.add("Interpreted", new JScrollPane(interpreterDump));
-        outputTabs.add("Compiled", new JScrollPane(compilerDump));
         outputTabs.setBackground(new Color(160, 255, 240));
         outputTabs.setForeground(Color.BLACK);
 
@@ -152,19 +145,10 @@ public class Playground {
             currentAST = ast;
         }
         codeExecutionQueue.execute(() -> {
-            updateCompilerDump(ast);
             updateInterpreterDump(ast);
         });
     }
 
-    private void updateCompilerDump(StatementNode ast) {
-        try {
-            updateDump(compilerDump, WordyCompiler.compile(ast, "PlaygroundCode", "PlaygroundCodeContext"));
-        } catch(Exception e) {
-            updateDump(compilerDump, e);
-            return;
-        }
-    }
 
     private void updateInterpreterDump(StatementNode executingAST) {
         final StringBuilder builder = new StringBuilder();
