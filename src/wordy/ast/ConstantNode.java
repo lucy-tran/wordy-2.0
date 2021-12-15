@@ -56,4 +56,11 @@ public final class ConstantNode extends ExpressionNode {
     public void compile(PrintWriter out) {
         out.print(value);
     }
+
+    // firstRecord = {...}
+    // Map<String, WordyValue> in EvaluationContext
+    // Classes that implement WordValue interface: ConstantNode, BinaryExpressionNode, VariableNode,
+    // RecordNode, FunctionDeclarationNode
+    // private EvaluationContext recordContext
+    // secondRecord = {a = 4, b = 3 + 5, c = a + b, r = firstRecord}
 }

@@ -11,13 +11,15 @@ import wordy.ast.ASTNode;
  * {@link wordy.ast.VariableNode}s read and write from this context.
  *
  * Also allows an optional Tracer, which receives notifications about the interpreter’s progress.
- * Tracing allows a debug UI to log program execution, and allows a UI to cancel execution early
- * by throwing an exception.
+ * Tracing allows a debug UI to log program execution, and allows a UI to cancel execution early by
+ * throwing an exception.
  *
  * @see wordy.compiler.WordyExecutable.ExecutionContext for the compiler counterpart to this class
  */
 public class EvaluationContext {
-    private final Map<String,Double> variables = new LinkedHashMap<>();
+
+    // TODO: create an interface WordyValue and WordyRuntimeTypeError
+    private final Map<String, Double> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 
     public EvaluationContext(Tracer tracer) {
@@ -25,7 +27,7 @@ public class EvaluationContext {
     }
 
     public EvaluationContext() {
-        this((node, ctx, phase, result) -> { });
+        this((node, ctx, phase, result) -> {});
     }
 
     /**
@@ -61,6 +63,9 @@ public class EvaluationContext {
     public interface Tracer {
         void traceNode(ASTNode astNode, EvaluationContext evaluationContext, Phase phase, Object result);
 
-        enum Phase { STARTED, COMPLETED }
+        enum Phase {
+            STARTED,
+            COMPLETED
+        }
     }
 }

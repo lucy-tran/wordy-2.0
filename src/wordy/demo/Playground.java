@@ -36,9 +36,9 @@ import static java.awt.Font.PLAIN;
 /**
  * An interactive UI for exploring Wordy that shows:
  * <ul>
- * <li> the AST for user-entered Wordy code,
- * <li> the execution trace and final output of its interpreted execution, and
- * <li> the Wordy code compiled to Java.
+ * <li>the AST for user-entered Wordy code,
+ * <li>the execution trace and final output of its interpreted execution, and
+ * <li>the Wordy code compiled to Java.
  * </ul>
  */
 public class Playground {
@@ -113,8 +113,7 @@ public class Playground {
                 public void changedUpdate(DocumentEvent e) {
                     codeChanged();
                 }
-            }
-        );
+            });
         codeChanged();
     }
 
@@ -130,7 +129,7 @@ public class Playground {
             astDump.setForeground(Color.BLACK);
 
             reevaluate(ast);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             var error = e.getFirstError();
             var errorHighlight = new DefaultHighlighter.DefaultHighlightPainter(new Color(0xFF8866));
             try {
@@ -141,14 +140,14 @@ public class Playground {
             } catch (Exception ble) {
                 // sometimes highlighting just doesn't work
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             // Don't let internal parser errors kill UI
             e.printStackTrace(System.err);
         }
     }
 
     private void reevaluate(StatementNode ast) {
-        synchronized(this) {
+        synchronized (this) {
             currentAST = ast;
         }
         codeExecutionQueue.execute(() -> {
@@ -160,7 +159,7 @@ public class Playground {
     private void updateCompilerDump(StatementNode ast) {
         try {
             updateDump(compilerDump, WordyCompiler.compile(ast, "PlaygroundCode", "PlaygroundCodeContext"));
-        } catch(Exception e) {
+        } catch (Exception e) {
             updateDump(compilerDump, e);
             return;
         }
@@ -170,9 +169,9 @@ public class Playground {
         final StringBuilder builder = new StringBuilder();
 
         var context = new EvaluationContext((node, ctx, phase, result) -> {
-            synchronized(Playground.this) {
-            if(executingAST != currentAST)
-                throw new ExecutionCancelledException();
+            synchronized (Playground.this) {
+                if (executingAST != currentAST)
+                    throw new ExecutionCancelledException();
             }
 
             builder.append("%-10s".formatted(phase.name()));
@@ -186,15 +185,15 @@ public class Playground {
 
         try {
             executingAST.run(context);
-        } catch(ExecutionCancelledException e) {
+        } catch (ExecutionCancelledException e) {
             return;
-        } catch(Exception e) {
+        } catch (Exception e) {
             updateDump(interpreterDump, e);
             return;
         }
 
         builder.append("\nExecution complete.\n\nResulting EvaluationContext:\n");
-        for(var variableEntry: context.allVariables().entrySet()) {
+        for (var variableEntry : context.allVariables().entrySet()) {
             builder.append("  ");
             builder.append(variableEntry.getKey());
             builder.append(" = ");
@@ -231,14 +230,47 @@ public class Playground {
         GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
 
     private Font findFont(int size, String... namesToTry) {
-        for(var name: namesToTry) {
-            if(availableFonts.contains(name))
+        for (var name : namesToTry) {
+            if (availableFonts.contains(name))
                 return new Font(name, PLAIN, size);
         }
         return new JLabel().getFont();  // returns system default
     }
 
+    public static double randomCalc(double m, double n, double o) {
+        // all statements in the body of this function runs under the context of this function.
+        // In other words, functions should be treated as a program itself, with its own evaluation context.
+        o = o + 1;
+        return (m - n) * 0;
+    }
+
+    public static double mean(double a, double b) {
+        a = 4;
+        b = b + randomCalc(a, b, 4);
+
+        // When we call a function, we need to loop over the arguments, and for each argument:
+        // 1. Evaluate the argument to a double:
+        // - If the argument is a VariableNode, evaluate the value of it from the program's context.
+        // - If the argument is a constant node, extract the double value of it
+        // - If the argument is a function, take the returnValue of it
+        // 2. Assign the double value of the argument to the corresponding variable in the function's
+        // context.
+
+        // TODO: Since Java doesn't allow for nested methods, should we make all functions compile
+        // to lambda expressions? See the result of the Compiled tab in Wordy Playground.
+        // static double randomFunc() {
+        // return 3.0;
+        // }return(a+b)/2;
+
+        return (a - b);
+
+    }
+
     public static void main(String[] args) {
         new Playground();
+        double x = 2;
+        double y = 10;
+        System.out.println(mean(x, y));
+        System.out.println(x);
     }
 }

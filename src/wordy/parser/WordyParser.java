@@ -144,7 +144,7 @@ public class WordyParser extends BaseParser<ASTNode> {
             KeyPhrase("set"),
             Variable(),
             KeyPhrase("to"),
-            Expression(),
+            Expression(), // or a FunctionNode with a not-null returnType
             push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())));
     }
 

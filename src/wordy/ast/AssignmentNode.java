@@ -28,6 +28,16 @@ public class AssignmentNode extends StatementNode {
         this.expression = expression;
     }
 
+    // TODO: Review this code
+    public AssignmentNode(VariableNode variable, FunctionDeclarationNode functionExpression, EvaluationContext context) {
+        this.variable = variable;
+        // functionExpression.doRun(context);
+        // if (functionExpression.getReturnType() == ReturnType.VOID) {
+        // // throw new
+        // }
+        this.expression = new ConstantNode(functionExpression.returnValue);
+    }
+
     @Override
     public Map<String, ASTNode> getChildren() {
         return orderedMap(
