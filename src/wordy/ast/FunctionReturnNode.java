@@ -17,7 +17,7 @@ import wordy.interpreter.LoopExited;
 public final class FunctionReturnNode extends StatementNode {
     private ExpressionNode returnExpression;
 
-    public FunctionReturnNode(ExpressionNode returnExpression, EvaluationContext context) {
+    public FunctionReturnNode(ExpressionNode returnExpression) {
         this.returnExpression = returnExpression;
     }
 
@@ -47,6 +47,7 @@ public final class FunctionReturnNode extends StatementNode {
 
     @Override
     public void doRun(EvaluationContext context) {
+        context.set("returnValue", returnExpression.doEvaluate(context));
         throw new FunctionReturned();
     }
 

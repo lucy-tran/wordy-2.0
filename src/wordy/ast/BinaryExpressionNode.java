@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Objects;
 
+import wordy.ast.values.WordyDouble;
 import wordy.interpreter.EvaluationContext;
 
 import static wordy.ast.Utils.orderedMap;
@@ -13,7 +14,11 @@ import static wordy.ast.Utils.orderedMap;
  */
 public class BinaryExpressionNode extends ExpressionNode {
     public enum Operator {
-        ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, EXPONENTIATION
+        ADDITION,
+        SUBTRACTION,
+        MULTIPLICATION,
+        DIVISION,
+        EXPONENTIATION
     }
 
     private final Operator operator;
@@ -34,9 +39,9 @@ public class BinaryExpressionNode extends ExpressionNode {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)
+        if (this == o)
             return true;
-        if(o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
         BinaryExpressionNode that = (BinaryExpressionNode) o;
         return this.operator == that.operator
@@ -64,64 +69,67 @@ public class BinaryExpressionNode extends ExpressionNode {
     }
 
     @Override
-    protected double doEvaluate(EvaluationContext context) {
-        switch(operator) {
+    protected WordyDouble doEvaluate(EvaluationContext context) {
+        double right = ((WordyDouble) rhs.doEvaluate(context)).getValue();
+        double left = ((WordyDouble) lhs.doEvaluate(context)).getValue();
+
+        switch (operator) {
             case ADDITION:
-                return rhs.evaluate(context) + lhs.evaluate(context);
+                return new WordyDouble(right + left);
             case SUBTRACTION:
-                return lhs.evaluate(context) - rhs.evaluate(context);
+                return new WordyDouble(left - right);
             case MULTIPLICATION:
-                return rhs.evaluate(context) * lhs.evaluate(context);
+                return new WordyDouble(right * left);
             case DIVISION:
-                return lhs.evaluate(context) / rhs.evaluate(context);
+                return new WordyDouble(left / right);
             case EXPONENTIATION:
-                return Math.pow(lhs.evaluate(context), rhs.evaluate(context));
+                return new WordyDouble(Math.pow(left, right));
         }
         throw new UnsupportedOperationException("Unknown operator:" + operator);
     }
 
     @Override
     public void compile(PrintWriter out) {
-        switch(operator) {
+        switch (operator) {
             case ADDITION:
                 out.print("(");
                 lhs.compile(out);
-                out.print("+"); 
+                out.print("+");
                 rhs.compile(out);
                 out.print(")");
                 break;
             case SUBTRACTION:
                 out.print("(");
                 lhs.compile(out);
-                out.print("-"); 
+                out.print("-");
                 rhs.compile(out);
                 out.print(")");
                 break;
-               
+
             case MULTIPLICATION:
                 out.print("(");
                 lhs.compile(out);
-                out.print("*"); 
+                out.print("*");
                 rhs.compile(out);
                 out.print(")");
                 break;
-               
+
             case DIVISION:
                 out.print("(");
                 lhs.compile(out);
-                out.print("/"); 
+                out.print("/");
                 rhs.compile(out);
                 out.print(")");
                 break;
-                
+
             case EXPONENTIATION:
                 out.print("Math.pow(");
                 lhs.compile(out);
-                out.print(","); 
+                out.print(",");
                 rhs.compile(out);
                 out.print(")");
                 break;
- 
+
         }
     }
 }

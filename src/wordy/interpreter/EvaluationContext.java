@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import wordy.ast.ASTNode;
+import wordy.ast.values.WordyValue;
 
 /**
  * Holds the values of a Wordy program’s variables before, during, and after interpreted execution.
@@ -18,8 +19,8 @@ import wordy.ast.ASTNode;
  */
 public class EvaluationContext {
 
-    // TODO: create an interface WordyValue and WordyRuntimeTypeError
-    private final Map<String, Double> variables = new LinkedHashMap<>();
+    // TODO: create an interface WordyRuntimeTypeError
+    private final Map<String, WordyValue> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 
     public EvaluationContext(Tracer tracer) {
@@ -33,19 +34,19 @@ public class EvaluationContext {
     /**
      * Returns the current value of the variable with the given name.
      */
-    public double get(String name) {
-        Double result = variables.get(name);
-        return (result == null) ? 0 : result;
+    public WordyValue get(String name) {
+        WordyValue result = variables.get(name);
+        return result;
     }
 
     /**
      * Changes the current value of the variable with the given name.
      */
-    public void set(String name, double value) {
+    public void set(String name, WordyValue value) {
         variables.put(name, value);
     }
 
-    public Map<String, Double> allVariables() {
+    public Map<String, WordyValue> allVariables() {
         return Collections.unmodifiableMap(variables);
     }
 

@@ -2,6 +2,8 @@ package wordy.interpreter;
 
 import org.junit.jupiter.api.Test;
 
+import wordy.ast.values.WordyDouble;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static wordy.parser.WordyParser.parseExpression;
@@ -19,8 +21,8 @@ public class InterpreterTest {
 
     @Test
     void evaluateVariable() {
-        context.set("question", 54);
-        context.set("answer", 42);
+        context.set("question", new WordyDouble(54));
+        context.set("answer", new WordyDouble(42));
         assertEvaluationEquals(54, "question");
         assertEvaluationEquals(42, "answer");
         assertEvaluationEquals(0, "fish");
@@ -58,19 +60,19 @@ public class InterpreterTest {
             + "if x equals 12 then set eq to x else set eq to eq minus 1."
             + "if x is greater than 12 then set gt to x else set gt to gt minus 1.";
 
-        context.set("x", 11);
+        context.set("x", new WordyDouble(11));
         runProgram(program);
         assertVariableEquals("lt", 11);
         assertVariableEquals("eq", -1);
         assertVariableEquals("gt", -1);
 
-        context.set("x", 12);
+        context.set("x", new WordyDouble(12));
         runProgram(program);
         assertVariableEquals("lt", 10);
         assertVariableEquals("eq", 12);
         assertVariableEquals("gt", -2);
 
-        context.set("x", 13);
+        context.set("x", new WordyDouble(13));
         runProgram(program);
         assertVariableEquals("lt", 9);
         assertVariableEquals("eq", 11);

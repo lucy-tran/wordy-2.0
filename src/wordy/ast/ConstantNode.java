@@ -5,16 +5,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import wordy.ast.values.WordyDouble;
 import wordy.interpreter.EvaluationContext;
 
 /**
  * A literal floating-point value (e.g. “3.141”) in a Wordy abstract syntax tree.
  */
 public final class ConstantNode extends ExpressionNode {
-    private final double value;
+    private final WordyDouble wordyDouble;
 
     public ConstantNode(double value) {
-        this.value = value;
+        this.wordyDouble = new WordyDouble(value);
     }
 
     @Override
@@ -24,37 +25,37 @@ public final class ConstantNode extends ExpressionNode {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)
+        if (this == o)
             return true;
-        if(o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
         ConstantNode other = (ConstantNode) o;
-        return Double.compare(this.value, other.value) == 0;
+        return WordyDouble.compare(this.wordyDouble, other.wordyDouble) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(wordyDouble);
     }
 
     @Override
     public String toString() {
-        return "ConstantNode{value=" + value + '}';
+        return "ConstantNode{value=" + wordyDouble.getValue() + '}';
     }
 
     @Override
     protected String describeAttributes() {
-        return "(value=" + value + ')';
+        return "(value=" + wordyDouble.getValue() + ')';
     }
 
     @Override
-    protected double doEvaluate(EvaluationContext context) {
-        return value;
+    protected WordyDouble doEvaluate(EvaluationContext context) {
+        return wordyDouble;
     }
 
     @Override
     public void compile(PrintWriter out) {
-        out.print(value);
+        out.print(wordyDouble.getValue());
     }
 
     // firstRecord = {...}

@@ -1,9 +1,14 @@
 package wordy.ast;
 
+import java.util.List;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+import wordy.ast.values.WordyClosure;
+import wordy.ast.values.WordyType;
+import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 import wordy.interpreter.FunctionReturned;
 
@@ -14,39 +19,13 @@ import wordy.interpreter.FunctionReturned;
  * This expression evaluates to the current value of the variable.
  */
 public class FunctionDeclarationNode extends ExpressionNode {
-    public enum ReturnType {
-        VOID,
-        CONSTANT
-    }
-
-    private final String name;
-    private final ReturnType returnType;
     private VariableNode[] params;
     private BlockNode body;
 
-    // TODO: Should functions have their own evaluation context?
-    protected EvaluationContext functionContext;
-    public Double returnValue;
-
-
     // TODO: Should the constructor include params or arguments?
-    public FunctionDeclarationNode(String name, ReturnType returnType, BlockNode body, VariableNode... params) {
-        this.name = name;
-        this.returnType = returnType;
+    public FunctionDeclarationNode(BlockNode body, VariableNode... params) {
         this.params = params;
         this.body = body;
-        this.functionContext = new EvaluationContext();
-    }
-
-    /**
-     * The name of the function.
-     */
-    public String getName() {
-        return name;
-    }
-
-    public ReturnType getReturnType() {
-        return returnType;
     }
 
     @Override
@@ -63,9 +42,10 @@ public class FunctionDeclarationNode extends ExpressionNode {
             return false;
 
         FunctionDeclarationNode that = (FunctionDeclarationNode) o;
-        if (this.returnType != that.returnType) {
-            return false;
-        } else if (this.params != that.params) {
+        // if (this.returnType != that.returnType) {
+        // return false;
+        // } else
+        if (this.params != that.params) {
             return false;
         } else if (this.body != that.body) {
             return false;
@@ -76,61 +56,54 @@ public class FunctionDeclarationNode extends ExpressionNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(this);
     }
 
     @Override
     public String toString() {
-        return "FunctionNode{name=" + name + ", returnType=" + returnType.toString() +
-            ", params=" + params + ", body=" + body + '}';
+        // return "FunctionDeclarationNode{returnType=" + returnType.toString() +
+        // ", params=" + params + ", body=" + body + '}';
+        return "FunctionDeclarationNode{params=" + params + ", body=" + body + '}';
     }
 
     @Override
     // TODO: Implement this method
     protected String describeAttributes() {
-        return "(name=\"" + name + "\")";
-    }
-
-    @Override
-    public void compile(PrintWriter out) {
-        String type = returnType == ReturnType.VOID ? "void" : "double";
-        StringBuilder paramsStr = new StringBuilder("(");
+        StringBuilder paramsStr = new StringBuilder("[");
         for (int i = 0; i < params.length; i++) {
             if (i != params.length - 1) {
-                paramsStr.append("double " + params[i].getName() + ", ");
+                paramsStr.append(params[i].describeAttributes() + ", ");
             } else {
-                paramsStr.append("double " + params[i].getName() + ")");
+                paramsStr.append(params[i].describeAttributes() + "]");
             }
         }
-        out.print("public static " + type + " " + name + paramsStr);
-        out.print(body);
+        // return "(returnType=" + returnType.toString() +
+        // ", params=" + paramsStr + ", body=" + body.describeAttributes() + ')';
+        return "(params=" + paramsStr + ", body=" + body.describeAttributes() + ')';
     }
 
     // @Override
-    // protected void doRun(EvaluationContext context) {
-    // context.set(this.name, WordyValue);
-    // // Where do we store the function declarations? Maybe WordyValue stored with all other
-    // WordyValues
-    // // => closures
-    // // Function type of itself, not a wordyvalue => OOP
-    // // can the function see things from the parent context => NO! this will lead to
-    // for (VariableNode param : this.params) {
-    // this.functionContext.set(param.getName(), 1);
-    // // this.functionContext.set(param.getName(), context.get(argumentExpression));
-    // }
-
-    // while (true) {
-    // try {
-    // body.doRun(functionContext);
-    // } catch (FunctionReturned exception) {
-    // break;
+    // public void compile(PrintWriter out) {
+    // String type = returnType == ReturnType.WordyNull ? "void" : "double";
+    // StringBuilder paramsStr = new StringBuilder("(");
+    // for (int i = 0; i < params.length; i++) {
+    // if (i != params.length - 1) {
+    // paramsStr.append("double " + params[i].getName() + ", ");
+    // } else {
+    // paramsStr.append("double " + params[i].getName() + ")");
     // }
     // }
+    // out.print("public static " + type + " " + name + paramsStr);
+    // out.print(body);
     // }
 
     @Override
-    protected double doEvaluate(EvaluationContext context) {
-        // TODO Auto-generated method stub
-        return 0;
+    protected WordyValue doEvaluate(EvaluationContext context) {
+        List<String> paramNames = new ArrayList<>();
+        for (VariableNode param : params) {
+            paramNames.add(param.getName());
+        }
+        WordyClosure closure = new WordyClosure(paramNames, body);
+        return closure;
     }
 }

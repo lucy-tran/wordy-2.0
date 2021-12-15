@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Objects;
 
+import wordy.ast.values.WordyDouble;
+import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 
 import static wordy.ast.Utils.orderedMap;
@@ -11,15 +13,17 @@ import static wordy.ast.Utils.orderedMap;
 /**
  * A conditional (“If … then”) in a Wordy abstract syntax tree.
  * 
- * Wordy only supports direct comparisons between two numeric expressions, e.g.
- * "If x is less than y then….” Wordy does not support boolean operators, or arbitrary boolean
- * expressions. The general structure of a Wordy conditional is:
+ * Wordy only supports direct comparisons between two numeric expressions, e.g. "If x is less than y
+ * then….” Wordy does not support boolean operators, or arbitrary boolean expressions. The general
+ * structure of a Wordy conditional is:
  * 
- *     If <lhs> <operator> <rhs> then <ifTrue> else <ifFalse>
+ * If <lhs> <operator> <rhs> then <ifTrue> else <ifFalse>
  */
 public class ConditionalNode extends StatementNode {
     public enum Operator {
-        EQUALS, LESS_THAN, GREATER_THAN
+        EQUALS,
+        LESS_THAN,
+        GREATER_THAN
     }
 
     private final Operator operator;
@@ -45,8 +49,10 @@ public class ConditionalNode extends StatementNode {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ConditionalNode that = (ConditionalNode) o;
         return this.operator == that.operator
             && this.lhs.equals(that.lhs)
@@ -78,22 +84,29 @@ public class ConditionalNode extends StatementNode {
 
     @Override
     protected void doRun(EvaluationContext context) {
-        double rhs_value = rhs.doEvaluate(context);
-        double lhs_value = lhs.doEvaluate(context);
+        WordyValue lhs_value = lhs.doEvaluate(context);
+        WordyValue rhs_value = rhs.doEvaluate(context);
+
+        assert lhs_value instanceof WordyDouble;
+        assert rhs_value instanceof WordyDouble;
+
+        double left = ((WordyDouble) lhs_value).getValue();
+        double right = ((WordyDouble) rhs_value).getValue();
+
         Boolean conditional_result = false;
 
-        switch(operator) {
+        switch (operator) {
             case EQUALS:
-                if(lhs_value == rhs_value)
-                conditional_result = true;
+                if (left == right)
+                    conditional_result = true;
                 break;
             case LESS_THAN:
-                if(lhs_value < rhs_value)
-                conditional_result = true;
+                if (left < right)
+                    conditional_result = true;
                 break;
             case GREATER_THAN:
-                if(lhs_value > rhs_value)
-                conditional_result = true;
+                if (left > right)
+                    conditional_result = true;
                 break;
         }
 
@@ -106,7 +119,7 @@ public class ConditionalNode extends StatementNode {
     @Override
     public void compile(PrintWriter out) {
         out.print("if(");
-        switch(operator) {
+        switch (operator) {
             case EQUALS:
                 lhs.compile(out);
                 out.print("=");

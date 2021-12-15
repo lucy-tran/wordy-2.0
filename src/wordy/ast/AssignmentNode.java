@@ -1,6 +1,5 @@
 package wordy.ast;
 
-import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,67 +17,71 @@ public class AssignmentNode extends StatementNode {
     private final VariableNode variable;
 
     /**
-     * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to
-     * the LHS variable.
+     * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to the
+     * LHS variable.
      */
-    private final ExpressionNode expression;
+    private final ASTNode rightHandNode;
 
     public AssignmentNode(VariableNode variable, ExpressionNode expression) {
+        // Here, expression may be a FunctionDeclarationNode
         this.variable = variable;
-        this.expression = expression;
+        this.rightHandNode = expression;
     }
 
-    // TODO: Review this code
-    public AssignmentNode(VariableNode variable, FunctionDeclarationNode functionExpression, EvaluationContext context) {
+    public AssignmentNode(VariableNode variable, FunctionCallNode functionCallNode) {
         this.variable = variable;
-        // functionExpression.doRun(context);
-        // if (functionExpression.getReturnType() == ReturnType.VOID) {
-        // // throw new
-        // }
-        this.expression = new ConstantNode(functionExpression.returnValue);
+        this.rightHandNode = functionCallNode;
     }
+
 
     @Override
     public Map<String, ASTNode> getChildren() {
         return orderedMap(
             "lhs", variable,
-            "rhs", expression);
+            "rhs", rightHandNode);
     }
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)
+        if (this == o)
             return true;
-        if(o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
         AssignmentNode that = (AssignmentNode) o;
         return variable.equals(that.variable)
-            && expression.equals(that.expression);
+            && rightHandNode.equals(that.rightHandNode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(variable, expression);
+        return Objects.hash(variable, rightHandNode);
     }
 
     @Override
     public String toString() {
         return "AssignmentStatement{"
             + "variable='" + variable + '\''
-            + ", expression=" + expression
+            + ", expression=" + rightHandNode
             + '}';
     }
 
     @Override
     protected void doRun(EvaluationContext context) {
-        context.set(variable.getName(), expression.doEvaluate(context));
+        if (rightHandNode instanceof ExpressionNode) {
+            ExpressionNode expression = ((ExpressionNode) rightHandNode);
+            context.set(variable.getName(), expression.doEvaluate(context));
+        } else if (rightHandNode instanceof FunctionCallNode) {
+            FunctionCallNode functionCallNode = ((FunctionCallNode) rightHandNode);
+            functionCallNode.doRun(context);
+            context.set(variable.getName(), functionCallNode.getReturnValue());
+        }
     }
 
-    @Override
-    public void compile(PrintWriter out) {
-        variable.compile(out);
-        out.print("=");
-        expression.compile(out);
-        out.print(";");
-    }
+    // @Override
+    // public void compile(PrintWriter out) {
+    // variable.compile(out);
+    // out.print("=");
+    // expression.compile(out);
+    // out.print(";");
+    // }
 }

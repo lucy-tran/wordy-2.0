@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 
 /**
@@ -34,9 +35,9 @@ public class VariableNode extends ExpressionNode {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)
+        if (this == o)
             return true;
-        if(o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
         VariableNode that = (VariableNode) o;
         return this.name.equals(that.name);
@@ -56,14 +57,14 @@ public class VariableNode extends ExpressionNode {
     protected String describeAttributes() {
         return "(name=\"" + name + "\")";
     }
-    
+
     @Override
-    protected double doEvaluate(EvaluationContext context) {
+    protected WordyValue doEvaluate(EvaluationContext context) {
         return context.get(name);
     }
 
     @Override
     public void compile(PrintWriter out) {
-        out.print("context."+name);
+        out.print("context." + name);
     }
 }
