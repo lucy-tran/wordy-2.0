@@ -301,15 +301,16 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule ExpressionGroup(Var<List<ExpressionNode>> list) {
+        System.out.println("expressionGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),
-                Variable(),
+                Expression(),
                 list.get().add((ExpressionNode) pop())),
             ZeroOrMore(
                 Sequence(
                     OptionalSurroundingSpace(","),
-                    Variable(),
+                    Expression(),
                     list.get().add((ExpressionNode) pop()))),
             OptionalSurroundingSpace(")"));
     }
