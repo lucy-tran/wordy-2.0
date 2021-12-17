@@ -5,21 +5,22 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Objects;
 
+import wordy.ast.values.WordyDouble;
 import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 
 public class FieldAccessNode extends ExpressionNode{
-    private final String fieldName;
-    // private final String objName;
+    private final String RecordName;
+    // private final String FieldName;
 
-    public FieldAccessNode(String fieldName){
-        this.fieldName = fieldName;
-        // this.objName = objName;
+    public FieldAccessNode(String RecordName){
+        // this.FieldName = FieldName;
+        this.RecordName = RecordName;
     }
 
     @Override
     protected WordyValue doEvaluate(EvaluationContext context) {
-        return context.get(fieldName);
+        return new EvaluationContext();
     }
 
     @Override
@@ -29,18 +30,17 @@ public class FieldAccessNode extends ExpressionNode{
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
         FieldAccessNode that = (FieldAccessNode) o;
-        return this.fieldName.equals(that.fieldName); // & this.objName.equals(that.objName);
+        return this.RecordName.equals(that.RecordName);//this.FieldName.equals(that.FieldName) & 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldName);
+        return Objects.hash(RecordName);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FieldAccessNode extends ExpressionNode{
 
     @Override
     protected String describeAttributes() {
-        return "(RecordName=\"" + fieldName + "\")";
+        return "(RecordName=\"" + RecordName + "\" )"; //",FieldName =" + FieldName
     }
 
     

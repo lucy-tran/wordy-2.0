@@ -1,33 +1,62 @@
 package wordy.ast;
 
 import java.util.Map;
+import java.util.Objects;
+import static wordy.ast.Utils.orderedMap;
 
 import wordy.interpreter.EvaluationContext;
 
 public class FieldAssignmentNode extends StatementNode{
+        /**
+     * The left-hand side (LHS) of the assignment, the variable whose value will be updated.
+     */
+    private final FieldAccessNode variable;
+
+    /**
+     * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to the
+     * LHS variable.
+     */
+    private final ASTNode records;
+
+    public FieldAssignmentNode (FieldAccessNode variable, BlockNode records) {
+        // Here, expression may be a FunctionDeclarationNode
+        this.variable = variable;
+        this.records= records;
+    }
 
     @Override
     protected void doRun(EvaluationContext context) {
         // TODO Auto-generated method stub
+        double atest = 1;
         
     }
 
     @Override
     public Map<String, ASTNode> getChildren() {
-        // TODO Auto-generated method stub
-        return null;
+        return orderedMap(
+            "lhs", variable,
+            "rhs", records);
     }
 
     @Override
     public boolean equals(Object obj) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+
+    @Override
+    public String toString() {
+        return "FieldAssignmentStatement{"
+            + "Record='" + variable + '\''
+            + ", Field=" + records
+            + '}';
     }
     
 }
