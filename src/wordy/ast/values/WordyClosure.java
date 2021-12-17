@@ -28,4 +28,21 @@ public class WordyClosure implements WordyValue {
     public WordyType getType() {
         return WordyType.Closure;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof WordyClosure) {
+            WordyClosure that = (WordyClosure) obj;
+            if (!this.paramNames.equals(that.getParamNames())) {
+                System.out.println("params not equal");
+            }
+
+            if (!this.body.equals(that.getBody())) {
+                System.out.println("body not equal");
+            }
+            return this.paramNames.equals(that.getParamNames()) && this.body.equals(that.getBody());
+        } else {
+            return false;
+        }
+    }
 }

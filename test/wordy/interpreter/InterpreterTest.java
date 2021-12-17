@@ -8,6 +8,13 @@ import static wordy.parser.WordyParser.parseExpression;
 import static wordy.parser.WordyParser.parseProgram;
 import static wordy.parser.WordyParser.parseStatement;
 
+import java.util.List;
+
+import wordy.ast.BinaryExpressionNode;
+import wordy.ast.ConstantNode;
+import wordy.ast.FunctionReturnNode;
+import wordy.ast.VariableNode;
+import wordy.ast.values.WordyClosure;
 import wordy.ast.values.WordyDouble;
 import wordy.ast.values.WordyValue;
 
@@ -95,6 +102,51 @@ public class InterpreterTest {
         runProgram("loop: set x to x plus 1. if x equals 10 then exit loop. set y to y plus x squared. end of loop.");
         assertVariableEquals("x", new WordyDouble(10));
         assertVariableEquals("y", new WordyDouble(285));
+    }
+
+    @Test
+    void executeFunctionDeclaration() {
+        runProgram("set x to function of (a) in: return a plus 1.");
+        assertVariableEquals(
+            "x",
+            new WordyClosure(
+                List.of("a"),
+                new FunctionReturnNode(
+                    new BinaryExpressionNode(
+                        BinaryExpressionNode.Operator.ADDITION,
+                        new VariableNode("a"),
+                        new ConstantNode(1)))));
+    }
+
+    @Test
+    void executeFunctionCall() {
+        runProgram("set x to function of (a) in: return a plus 1. set y to x of (3) executed.");
+        assertVariableEquals(
+            "y",
+            new WordyDouble(4));
+
+        runStatement("set x to function of (a, b) in: set a to a times 2. set b to b minus 1. return a plus b.");
+        runStatement("set y to x of (3, 5) executed");
+        assertVariableEquals(
+            "y",
+            new WordyDouble(10));
+
+        runStatement("set x to function of (a) in: set a to a times 2.");
+        runStatement("set b to 3");
+        runStatement("set y to x of (b) executed");
+        assertVariableEquals( // nothing is returned from function x.
+            "y",
+            null);
+        assertVariableEquals(
+            "b",
+            new WordyDouble(3)); // variable b in the program's context is unaffected by function x.
+        assertVariableEquals("a", null); // variable a exists in the context of function x only.
+    }
+
+    @Test
+    void executeFunctionReturn() {
+        assertThrows(FunctionReturned.class, () -> runStatement("return"));
+        assertThrows(FunctionReturned.class, () -> runStatement("return (a plus b) divided by 2"));
     }
 
     // ––––––– Helpers –––––––

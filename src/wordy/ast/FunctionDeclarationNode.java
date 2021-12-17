@@ -18,8 +18,8 @@ import wordy.interpreter.EvaluationContext;
  * This expression evaluates to the current value of the variable.
  */
 public class FunctionDeclarationNode extends ExpressionNode {
-    private List<VariableNode> params;
-    private StatementNode body;
+    private final List<VariableNode> params;
+    private final StatementNode body;
 
     public FunctionDeclarationNode(StatementNode body, List<VariableNode> params) {
         this.body = body;
@@ -27,8 +27,8 @@ public class FunctionDeclarationNode extends ExpressionNode {
     }
 
     public FunctionDeclarationNode(StatementNode body, VariableNode... params) {
-        this.params = Arrays.asList(params);
         this.body = body;
+        this.params = Arrays.asList(params);
     }
 
     @Override
@@ -49,9 +49,9 @@ public class FunctionDeclarationNode extends ExpressionNode {
             return false;
 
         FunctionDeclarationNode that = (FunctionDeclarationNode) o;
-        if (this.params != that.params) {
+        if (!this.params.equals(that.params)) {
             return false;
-        } else if (this.body != that.body) {
+        } else if (!this.body.equals(that.body)) {
             return false;
         } else {
             return true;

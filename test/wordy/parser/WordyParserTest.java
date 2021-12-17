@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static wordy.parser.WordyParser.parseExpression;
 import static wordy.parser.WordyParser.parseProgram;
 import static wordy.parser.WordyParser.parseStatement;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WordyParserTest {
@@ -243,6 +246,59 @@ public class WordyParserTest {
     }
 
     @Test
+    void testFunctionDeclaration() {
+        assertEquals(
+            new FunctionDeclarationNode(
+                new FunctionReturnNode()),
+            parseExpression("function of () in: return"));
+        assertEquals(
+            new FunctionDeclarationNode(
+                new FunctionReturnNode(
+                    new BinaryExpressionNode(
+                        BinaryExpressionNode.Operator.MULTIPLICATION,
+                        new VariableNode("a"),
+                        new ConstantNode(10))),
+                new VariableNode("a")),
+            parseExpression("function of (a) in: return a times 10"));
+        assertEquals(
+            new FunctionDeclarationNode(
+                new FunctionReturnNode(
+                    new BinaryExpressionNode(
+                        BinaryExpressionNode.Operator.DIVISION,
+                        new BinaryExpressionNode(
+                            BinaryExpressionNode.Operator.ADDITION,
+                            new VariableNode("a"),
+                            new VariableNode("b")),
+                        new ConstantNode(2))),
+                new VariableNode("a"),
+                new VariableNode("b")),
+            parseExpression("function of (a, b) in: return (a plus b) divided by 2"));
+    }
+
+    @Test
+    void testFunctionCall() {
+        assertEquals(
+            new FunctionCallNode(
+                new VariableNode("println")),
+            parseStatement("println executed"));
+        assertEquals(
+            new FunctionCallNode(
+                new VariableNode("area"),
+                new VariableNode("a"),
+                new VariableNode("b")),
+            parseStatement("area of (a, b) executed"));
+        assertEquals(
+            new FunctionCallNode(
+                new VariableNode("area"),
+                new ConstantNode(10),
+                new BinaryExpressionNode(
+                    BinaryExpressionNode.Operator.ADDITION,
+                    new ConstantNode(5),
+                    new VariableNode("a"))),
+            parseStatement("area of (10, 5 plus a) executed"));
+    }
+
+    @Test
     void testFunctionReturn() {
         assertEquals(new FunctionReturnNode(),
             parseStatement("return"));
@@ -257,50 +313,18 @@ public class WordyParserTest {
             parseStatement("return (a plus b) divided by 2"));
         assertEquals(new FunctionReturnNode(
             new FunctionCallNode(
-                new VariableNode("testFunc"))),
-            parseStatement("return testFunc executed"));
+                new VariableNode("func"))),
+            parseStatement("return func executed"));
         assertEquals(new FunctionReturnNode(
             new FunctionCallNode(
-                new VariableNode("testFunc"),
-                new VariableNode("a"),
-                new ConstantNode(3),
-                new BinaryExpressionNode(
-                    BinaryExpressionNode.Operator.DIVISION,
-                    new ConstantNode(10),
-                    new ConstantNode(2)))),
-            parseStatement("return testFunc of (a, 3, 10 divided by 2) executed"));
-    }
-
-    @Test
-    void testFunctionDeclaration() {
-        // assertEquals(new AssignmentNode(
-        // new VariableNode("testfunc"),
-        // new FunctionDeclarationNode(
-        // new FunctionReturnNode(
-        // new BinaryExpressionNode(
-        // BinaryExpressionNode.Operator.DIVISION,
-        // new BinaryExpressionNode(
-        // BinaryExpressionNode.Operator.ADDITION,
-        // new VariableNode("a"),
-        // new VariableNode("b")),
-        // new ConstantNode(2))),
-        // new VariableNode("a"),
-        // new VariableNode("b"))),
-        // parseStatement("set testfunc to function of (a, b) in: return (a plus b) divided by 2"));
-
-        assertEquals(
-            new FunctionDeclarationNode(
-                new FunctionReturnNode(
+                new VariableNode("func"),
+                List.of(new VariableNode("a"),
+                    new ConstantNode(3),
                     new BinaryExpressionNode(
                         BinaryExpressionNode.Operator.DIVISION,
-                        new BinaryExpressionNode(
-                            BinaryExpressionNode.Operator.ADDITION,
-                            new VariableNode("a"),
-                            new VariableNode("b")),
-                        new ConstantNode(2))),
-                new VariableNode("a"),
-                new VariableNode("b")),
-            parseExpression("function of (a, b) in: return (a plus b) divided by 2"));
+                        new ConstantNode(10),
+                        new ConstantNode(2))))),
+            parseStatement("return func of (a, 3, 10 divided by 2) executed"));
     }
 
     @Test
@@ -339,6 +363,10 @@ public class WordyParserTest {
             "set x to (x squared) plus (y to the power of (3 plus (z squared))).",
             "set x to  (  x  squared  )  plus  (  y  to  the  power  of  (  3  plus  (  z squared  )  )  )  .",
             "set x to(x squared)plus(y to the power of(3 plus(z squared))).");
+        assertEquivalentParsing(
+            "set x to function of (a, b) in: return y of (a, b, 2 plus 2) executed.",
+            "set  x  to  function  of  ( a , b  )  in  :  return   y  of ( a ,  b , 2  plus  2  ) executed.",
+            "set x to functionof(a,b)in:return y of(a,b,2plus2)executed.");
     }
 
     private void assertEquivalentParsing(String... variants) {

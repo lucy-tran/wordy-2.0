@@ -62,9 +62,4 @@ public class VariableNode extends ExpressionNode {
     protected WordyValue doEvaluate(EvaluationContext context) {
         return context.get(name);
     }
-
-    @Override
-    public void compile(PrintWriter out) {
-        out.print("context." + name);
-    }
 }

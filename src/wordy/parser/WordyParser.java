@@ -8,6 +8,7 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
+import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,8 +194,13 @@ public class WordyParser extends BaseParser<ASTNode> {
             KeyPhrase("set"),
             Variable(),
             KeyPhrase("to"),
-            Expression(),
-            push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())));
+            FirstOf(
+                Sequence(
+                    FunctionCall(),
+                    push(new AssignmentNode((VariableNode) pop(1), (FunctionCallNode) pop()))),
+                Sequence(
+                    Expression(),
+                    push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())))));
     }
 
     Rule Expression() {
@@ -205,17 +211,20 @@ public class WordyParser extends BaseParser<ASTNode> {
         Var<List<VariableNode>> list = new Var<>(new ArrayList<>());
         return Sequence(
             KeyPhrase("function of"),
-            // OptionalSurroundingSpace("("),
-            // ZeroOrMore(
-            // Variable(),
-            // OptionalSurroundingSpace(","),
-            // list.get().add((VariableNode) pop())),
-            // OptionalSurroundingSpace(")"),
-            VariableGroup(list),
+            FirstOf(
+                Sequence(
+                    OptionalSurroundingSpace("("),
+                    OptionalSurroundingSpace(")")),
+                VariableGroup(list)),
             KeyPhrase("in"),
             OptionalSurroundingSpace(":"),
-            Statement(),
-            push(new FunctionDeclarationNode((StatementNode) pop(), list.get())));
+            FirstOf(
+                Sequence(
+                    FunctionReturn(),
+                    push(new FunctionDeclarationNode((StatementNode) pop(), list.get()))),
+                Sequence(
+                    Block(),
+                    push(new FunctionDeclarationNode((BlockNode) pop(), list.get())))));
     }
 
     Rule AdditiveExpression() {
@@ -310,6 +319,7 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule VariableGroup(Var<List<VariableNode>> list) {
+        System.out.println("variableGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),
@@ -324,7 +334,6 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule ExpressionGroup(Var<List<ExpressionNode>> list) {
-        System.out.println("expressionGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),
