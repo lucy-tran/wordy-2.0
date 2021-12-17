@@ -8,6 +8,7 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
+import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,8 +181,13 @@ public class WordyParser extends BaseParser<ASTNode> {
             KeyPhrase("set"),
             Variable(),
             KeyPhrase("to"),
-            Expression(),
-            push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())));
+            FirstOf(
+                Sequence(
+                    FunctionCall(),
+                    push(new AssignmentNode((VariableNode) pop(1), (FunctionCallNode) pop()))),
+                Sequence(
+                    Expression(),
+                    push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())))));
     }
 
     Rule Expression() {
@@ -199,8 +205,13 @@ public class WordyParser extends BaseParser<ASTNode> {
                 VariableGroup(list)),
             KeyPhrase("in"),
             OptionalSurroundingSpace(":"),
-            Statement(),
-            push(new FunctionDeclarationNode((StatementNode) pop(), list.get())));
+            FirstOf(
+                Sequence(
+                    FunctionReturn(),
+                    push(new FunctionDeclarationNode((StatementNode) pop(), list.get()))),
+                Sequence(
+                    Block(),
+                    push(new FunctionDeclarationNode((BlockNode) pop(), list.get())))));
     }
 
     Rule AdditiveExpression() {

@@ -87,15 +87,11 @@ public class FunctionCallNode extends StatementNode {
         if (!(storedValue instanceof WordyClosure)) {
             throw new WordyRuntimeTypeError("Variable is of type " + storedValue.getType().toString() + ". Please make sure it is a closure.");
         }
+
         WordyClosure closure = ((WordyClosure) storedValue);
         StatementNode body = closure.getBody();
         List<String> params = closure.getParamNames();
         EvaluationContext functionContext = closure.context;
-        // Where do we store the function declarations? Maybe WordyValue stored with all other
-        // WordyValues
-        // => closures
-        // Function type of itself, not a wordyvalue => OOP
-        // can the function see things from the parent context => NO! this will lead to
 
         try {
             for (int i = 0; i < params.size(); i++) {
@@ -105,13 +101,11 @@ public class FunctionCallNode extends StatementNode {
             System.out.println("The number of arguments must match the number of parameters!");
         }
 
-        while (true) {
-            try {
-                body.doRun(functionContext);
-            } catch (FunctionReturned exception) {
-                returnValue = functionContext.get("returnValue");
-                break;
-            }
+        try {
+            body.doRun(functionContext);
+        } catch (FunctionReturned exception) {
+            returnValue = functionContext.get("returnValue");
+
         }
     }
 }

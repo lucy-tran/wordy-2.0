@@ -313,18 +313,18 @@ public class WordyParserTest {
             parseStatement("return (a plus b) divided by 2"));
         assertEquals(new FunctionReturnNode(
             new FunctionCallNode(
-                new VariableNode("testFunc"))),
-            parseStatement("return testFunc executed"));
+                new VariableNode("func"))),
+            parseStatement("return func executed"));
         assertEquals(new FunctionReturnNode(
             new FunctionCallNode(
-                new VariableNode("testFunc"),
+                new VariableNode("func"),
                 List.of(new VariableNode("a"),
                     new ConstantNode(3),
                     new BinaryExpressionNode(
                         BinaryExpressionNode.Operator.DIVISION,
                         new ConstantNode(10),
                         new ConstantNode(2))))),
-            parseStatement("return testFunc of (a, 3, 10 divided by 2) executed"));
+            parseStatement("return func of (a, 3, 10 divided by 2) executed"));
     }
 
     @Test
@@ -364,9 +364,9 @@ public class WordyParserTest {
             "set x to  (  x  squared  )  plus  (  y  to  the  power  of  (  3  plus  (  z squared  )  )  )  .",
             "set x to(x squared)plus(y to the power of(3 plus(z squared))).");
         assertEquivalentParsing(
-            "function of (a, b, c) in: ",
-            "set x to  (  x  squared  )  plus  (  y  to  the  power  of  (  3  plus  (  z squared  )  )  )  .",
-            "set x to(x squared)plus(y to the power of(3 plus(z squared))).");
+            "set x to function of (a, b) in: return y of (a, b, 2 plus 2) executed.",
+            "set  x  to  function  of  ( a , b  )  in  :  return   y  of ( a ,  b , 2  plus  2  ) executed.",
+            "set x to functionof(a,b)in:return y of(a,b,2plus2)executed.");
     }
 
     private void assertEquivalentParsing(String... variants) {

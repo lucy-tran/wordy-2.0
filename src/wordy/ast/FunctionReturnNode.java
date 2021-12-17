@@ -35,10 +35,25 @@ public final class FunctionReturnNode extends StatementNode {
         return Map.of("returnNode", returnNode);
     }
 
+    public ASTNode getReturnNode() {
+        return returnNode;
+    }
+
     @Override
     public boolean equals(Object o) {
-        return this == o
-            || o != null && getClass() == o.getClass();
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        FunctionReturnNode that = (FunctionReturnNode) o;
+        if (this.returnNode == null) {
+            return that.getReturnNode() == null;
+        } else if (!(this.returnNode.equals(that.getReturnNode()))) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
