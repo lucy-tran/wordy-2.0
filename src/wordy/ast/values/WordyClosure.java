@@ -1,17 +1,17 @@
 package wordy.ast.values;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import wordy.ast.BlockNode;
+import wordy.ast.StatementNode;
 import wordy.interpreter.EvaluationContext;
 
 public class WordyClosure implements WordyValue {
-    private BlockNode body;
+    private StatementNode body;
     private final List<String> paramNames;
     public EvaluationContext context;
 
-    public WordyClosure(List<String> paramNames, BlockNode body) {
+    public WordyClosure(List<String> paramNames, StatementNode body) {
         this.body = body;
         this.paramNames = paramNames;
         this.context = new EvaluationContext();
@@ -21,7 +21,7 @@ public class WordyClosure implements WordyValue {
         return paramNames;
     }
 
-    public BlockNode getBody() {
+    public StatementNode getBody() {
         return body;
     }
 

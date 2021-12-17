@@ -13,8 +13,6 @@ import wordy.ast.values.WordyValue;
 import wordy.ast.values.WordyNull;
 
 
-
-
 public class InterpreterTest {
     private final EvaluationContext context = new EvaluationContext();
 
@@ -42,7 +40,7 @@ public class InterpreterTest {
         assertEvaluationEquals(new WordyDouble(5), "2 plus 3");
         assertEvaluationEquals(new WordyDouble(-1), "2 minus 3");
         assertEvaluationEquals(new WordyDouble(6), "2 times 3");
-        double a = 2.0/3;
+        double a = 2.0 / 3;
         assertEvaluationEquals(new WordyDouble(a), "2 divided by 3");
         assertEvaluationEquals(new WordyDouble(4), "2 squared");
         assertEvaluationEquals(new WordyDouble(8), "2 to the power of 3");
@@ -66,8 +64,7 @@ public class InterpreterTest {
 
     @Test
     void executeConditional() {
-        String program =
-            "if x is less than 12 then set lt to x else set lt to lt minus 1."
+        String program = "if x is less than 12 then set lt to x else set lt to lt minus 1."
             + "if x equals 12 then set eq to x else set eq to eq minus 1."
             + "if x is greater than 12 then set gt to x else set gt to gt minus 1.";
 

@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import wordy.ast.values.WordyDouble;
+import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
+import wordy.interpreter.WordyRuntimeTypeError;
 
 import static wordy.ast.Utils.orderedMap;
 
@@ -70,7 +72,14 @@ public class BinaryExpressionNode extends ExpressionNode {
 
     @Override
     protected WordyDouble doEvaluate(EvaluationContext context) {
-        double right = ((WordyDouble) rhs.doEvaluate(context)).getValue();
+        WordyValue rightValue = rhs.doEvaluate(context);
+        WordyValue leftValue = lhs.doEvaluate(context);
+
+        if (!(rightValue instanceof WordyDouble) || !(leftValue instanceof WordyDouble)) {
+            throw new WordyRuntimeTypeError("Cannot do mathematical operations on non-numeric types.");
+        }
+
+        double right = ((WordyDouble) rightValue).getValue();
         double left = ((WordyDouble) lhs.doEvaluate(context)).getValue();
 
         switch (operator) {

@@ -8,8 +8,11 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
+import java.beans.Expression;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import wordy.ast.ASTNode;
 import wordy.ast.AssignmentNode;
@@ -18,6 +21,9 @@ import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
 import wordy.ast.ExpressionNode;
+import wordy.ast.FunctionCallNode;
+import wordy.ast.FunctionDeclarationNode;
+import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
 import wordy.ast.RecordNode;
@@ -87,8 +93,40 @@ public class WordyParser extends BaseParser<ASTNode> {
         return FirstOf(
             Assignment(),
             Conditional(),
+            FunctionReturn(),
             Loop(),
-            LoopExit());
+            LoopExit(),
+            FunctionCall());
+    }
+
+    Rule FunctionCall() {
+        Var<List<ExpressionNode>> list = new Var<>(new ArrayList<>());
+        return Sequence(
+            FirstOf(
+                Sequence(
+                    Variable(),
+                    KeyPhrase("of"),
+                    ExpressionGroup(list),
+                    push(new FunctionCallNode((VariableNode) pop(), list.get()))),
+                Sequence(
+                    Variable(),
+                    push(new FunctionCallNode((VariableNode) pop())))),
+            KeyPhrase("executed"));
+    }
+
+    Rule FunctionReturn() {
+        return FirstOf(
+            Sequence(
+                KeyPhrase("return"),
+                FunctionCall(),
+                push(new FunctionReturnNode((FunctionCallNode) pop()))),
+            Sequence(
+                KeyPhrase("return"),
+                Expression(),
+                push(new FunctionReturnNode((ExpressionNode) pop()))),
+            Sequence(
+                KeyPhrase("return"),
+                push(new FunctionReturnNode())));
     }
 
     Rule Conditional() {
@@ -150,6 +188,27 @@ public class WordyParser extends BaseParser<ASTNode> {
             push(new AssignmentNode((VariableNode) pop(1), (ExpressionNode) pop())));
     }
 
+    Rule Expression() {
+        return FirstOf(FunctionDeclaration(), AdditiveExpression());
+    }
+
+    Rule FunctionDeclaration() {
+        Var<List<VariableNode>> list = new Var<>(new ArrayList<>());
+        return Sequence(
+            KeyPhrase("function of"),
+            // OptionalSurroundingSpace("("),
+            // ZeroOrMore(
+            // Variable(),
+            // OptionalSurroundingSpace(","),
+            // list.get().add((VariableNode) pop())),
+            // OptionalSurroundingSpace(")"),
+            VariableGroup(list),
+            KeyPhrase("in"),
+            OptionalSurroundingSpace(":"),
+            Statement(),
+            push(new FunctionDeclarationNode((StatementNode) pop(), list.get())));
+    }
+
     Rule Record() {
         Var<List<AssignmentNode>> list = new Var<>(new ArrayList<>());
         return Sequence(KeyPhrase("{"),
@@ -158,10 +217,6 @@ public class WordyParser extends BaseParser<ASTNode> {
                 OptionalSurroundingSpace("."),
                 list.get().add((AssignmentNode) pop())),
             push(new RecordNode(list.get())), KeyPhrase("}"));
-    }
-
-    Rule Expression() {
-        return AdditiveExpression();
     }
 
     Rule AdditiveExpression() {
@@ -243,6 +298,34 @@ public class WordyParser extends BaseParser<ASTNode> {
                 "_")),
             push(new VariableNode(matchOrDefault("0"))),
             OptionalSpace());
+    }
+
+    Rule VariableGroup(Var<List<VariableNode>> list) {
+        return Sequence(
+            Sequence(
+                OptionalSurroundingSpace("("),
+                Variable(),
+                list.get().add((VariableNode) pop())),
+            ZeroOrMore(
+                Sequence(
+                    OptionalSurroundingSpace(","),
+                    Variable(),
+                    list.get().add((VariableNode) pop()))),
+            OptionalSurroundingSpace(")"));
+    }
+
+    Rule ExpressionGroup(Var<List<ExpressionNode>> list) {
+        return Sequence(
+            Sequence(
+                OptionalSurroundingSpace("("),
+                Variable(),
+                list.get().add((ExpressionNode) pop())),
+            ZeroOrMore(
+                Sequence(
+                    OptionalSurroundingSpace(","),
+                    Variable(),
+                    list.get().add((ExpressionNode) pop()))),
+            OptionalSurroundingSpace(")"));
     }
 
     Rule KeyPhrase(String phrase) {

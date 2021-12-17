@@ -18,8 +18,6 @@ import wordy.ast.values.WordyValue;
  * @see wordy.compiler.WordyExecutable.ExecutionContext for the compiler counterpart to this class
  */
 public class EvaluationContext {
-
-    // TODO: create an interface WordyRuntimeTypeError
     private final Map<String, WordyValue> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 

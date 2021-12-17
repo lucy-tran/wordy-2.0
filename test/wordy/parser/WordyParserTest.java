@@ -8,6 +8,9 @@ import wordy.ast.BinaryExpressionNode;
 import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
+import wordy.ast.FunctionCallNode;
+import wordy.ast.FunctionDeclarationNode;
+import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
 import wordy.ast.VariableNode;
@@ -22,8 +25,8 @@ public class WordyParserTest {
 
     @Test
     void testNumbers() {
-        assertEquals(new ConstantNode(37),    parseExpression("37"));
-        assertEquals(new ConstantNode(37.2),  parseExpression("37.2"));
+        assertEquals(new ConstantNode(37), parseExpression("37"));
+        assertEquals(new ConstantNode(37.2), parseExpression("37.2"));
         assertEquals(new ConstantNode(-37.2), parseExpression("-37.2"));
         assertParseError(() -> parseExpression("-37..2"));
     }
@@ -240,6 +243,67 @@ public class WordyParserTest {
     }
 
     @Test
+    void testFunctionReturn() {
+        assertEquals(new FunctionReturnNode(),
+            parseStatement("return"));
+        assertEquals(new FunctionReturnNode(
+            new BinaryExpressionNode(
+                BinaryExpressionNode.Operator.DIVISION,
+                new BinaryExpressionNode(
+                    BinaryExpressionNode.Operator.ADDITION,
+                    new VariableNode("a"),
+                    new VariableNode("b")),
+                new ConstantNode(2))),
+            parseStatement("return (a plus b) divided by 2"));
+        assertEquals(new FunctionReturnNode(
+            new FunctionCallNode(
+                new VariableNode("testFunc"))),
+            parseStatement("return testFunc executed"));
+        assertEquals(new FunctionReturnNode(
+            new FunctionCallNode(
+                new VariableNode("testFunc"),
+                new VariableNode("a"),
+                new ConstantNode(3),
+                new BinaryExpressionNode(
+                    BinaryExpressionNode.Operator.DIVISION,
+                    new ConstantNode(10),
+                    new ConstantNode(2)))),
+            parseStatement("return testFunc of (a, 3, 10 divided by 2) executed"));
+    }
+
+    @Test
+    void testFunctionDeclaration() {
+        // assertEquals(new AssignmentNode(
+        // new VariableNode("testfunc"),
+        // new FunctionDeclarationNode(
+        // new FunctionReturnNode(
+        // new BinaryExpressionNode(
+        // BinaryExpressionNode.Operator.DIVISION,
+        // new BinaryExpressionNode(
+        // BinaryExpressionNode.Operator.ADDITION,
+        // new VariableNode("a"),
+        // new VariableNode("b")),
+        // new ConstantNode(2))),
+        // new VariableNode("a"),
+        // new VariableNode("b"))),
+        // parseStatement("set testfunc to function of (a, b) in: return (a plus b) divided by 2"));
+
+        assertEquals(
+            new FunctionDeclarationNode(
+                new FunctionReturnNode(
+                    new BinaryExpressionNode(
+                        BinaryExpressionNode.Operator.DIVISION,
+                        new BinaryExpressionNode(
+                            BinaryExpressionNode.Operator.ADDITION,
+                            new VariableNode("a"),
+                            new VariableNode("b")),
+                        new ConstantNode(2))),
+                new VariableNode("a"),
+                new VariableNode("b")),
+            parseExpression("function of (a, b) in: return (a plus b) divided by 2"));
+    }
+
+    @Test
     void testProgram() {
         assertParseError(() -> parseProgram(""));
         assertEquals(
@@ -279,10 +343,10 @@ public class WordyParserTest {
 
     private void assertEquivalentParsing(String... variants) {
         ASTNode expected = parseProgram(variants[0]);
-        for(var variant : variants) {
+        for (var variant : variants) {
             try {
                 assertEquals(expected, parseProgram(variant));
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 System.err.println("Failure while comparing parsing of:"
                     + "\n    " + variants[0]
                     + "\n    " + variant);

@@ -1,16 +1,15 @@
 package wordy.ast;
 
 import java.util.List;
-import java.io.PrintWriter;
+import java.beans.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
 import wordy.ast.values.WordyClosure;
-import wordy.ast.values.WordyType;
 import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
-import wordy.interpreter.FunctionReturned;
 
 /**
  * A variable reference (e.g. “x”) in a Wordy abstract syntax tree. Note that this is a variable
@@ -19,12 +18,17 @@ import wordy.interpreter.FunctionReturned;
  * This expression evaluates to the current value of the variable.
  */
 public class FunctionDeclarationNode extends ExpressionNode {
-    private VariableNode[] params;
-    private BlockNode body;
+    private List<VariableNode> params;
+    private StatementNode body;
+
+    public FunctionDeclarationNode(StatementNode body, List<VariableNode> params) {
+        this.body = body;
+        this.params = List.copyOf(params);
+    }
 
     // TODO: Should the constructor include params or arguments?
-    public FunctionDeclarationNode(BlockNode body, VariableNode... params) {
-        this.params = params;
+    public FunctionDeclarationNode(StatementNode body, VariableNode... params) {
+        this.params = Arrays.asList(params);
         this.body = body;
     }
 
@@ -70,11 +74,11 @@ public class FunctionDeclarationNode extends ExpressionNode {
     // TODO: Implement this method
     protected String describeAttributes() {
         StringBuilder paramsStr = new StringBuilder("[");
-        for (int i = 0; i < params.length; i++) {
-            if (i != params.length - 1) {
-                paramsStr.append(params[i].describeAttributes() + ", ");
+        for (int i = 0; i < params.size(); i++) {
+            if (i != params.size() - 1) {
+                paramsStr.append(params.get(i).describeAttributes() + ", ");
             } else {
-                paramsStr.append(params[i].describeAttributes() + "]");
+                paramsStr.append(params.get(i).describeAttributes() + "]");
             }
         }
         // return "(returnType=" + returnType.toString() +

@@ -6,7 +6,6 @@ public class WordyNull implements WordyValue {
 
     @Override
     public WordyType getType() {
-        // TODO Auto-generated method stub
         return WordyType.Null;
     }
 

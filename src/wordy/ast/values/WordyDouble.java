@@ -1,8 +1,5 @@
 package wordy.ast.values;
 
-import java.util.Map;
-
-import wordy.interpreter.EvaluationContext;
 
 public class WordyDouble implements WordyValue {
     private final double value;
