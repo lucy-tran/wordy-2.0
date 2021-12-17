@@ -117,30 +117,4 @@ public class ConditionalNode extends StatementNode {
         else
             ifFalse.doRun(context);
     }
-
-    @Override
-    public void compile(PrintWriter out) {
-        out.print("if(");
-        switch (operator) {
-            case EQUALS:
-                lhs.compile(out);
-                out.print("=");
-                rhs.compile(out);
-                break;
-            case LESS_THAN:
-                lhs.compile(out);
-                out.print("<");
-                rhs.compile(out);
-                break;
-            case GREATER_THAN:
-                lhs.compile(out);
-                out.print(">");
-                rhs.compile(out);
-                break;
-        }
-        out.print(")");
-        ifTrue.compile(out);
-        out.print("else ");
-        ifFalse.compile(out);
-    }
 }

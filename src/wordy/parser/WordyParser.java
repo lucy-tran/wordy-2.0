@@ -192,13 +192,11 @@ public class WordyParser extends BaseParser<ASTNode> {
         Var<List<VariableNode>> list = new Var<>(new ArrayList<>());
         return Sequence(
             KeyPhrase("function of"),
-            // OptionalSurroundingSpace("("),
-            // ZeroOrMore(
-            // Variable(),
-            // OptionalSurroundingSpace(","),
-            // list.get().add((VariableNode) pop())),
-            // OptionalSurroundingSpace(")"),
-            VariableGroup(list),
+            FirstOf(
+                Sequence(
+                    OptionalSurroundingSpace("("),
+                    OptionalSurroundingSpace(")")),
+                VariableGroup(list)),
             KeyPhrase("in"),
             OptionalSurroundingSpace(":"),
             Statement(),
@@ -287,6 +285,7 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule VariableGroup(Var<List<VariableNode>> list) {
+        System.out.println("variableGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),
@@ -301,7 +300,6 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule ExpressionGroup(Var<List<ExpressionNode>> list) {
-        System.out.println("expressionGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),

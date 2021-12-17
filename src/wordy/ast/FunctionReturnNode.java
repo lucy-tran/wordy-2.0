@@ -66,11 +66,4 @@ public final class FunctionReturnNode extends StatementNode {
         }
         throw new FunctionReturned();
     }
-
-    @Override
-    public void compile(PrintWriter out) {
-        out.print("return ");
-        returnNode.compile(out);
-        out.print("; ");
-    }
 }

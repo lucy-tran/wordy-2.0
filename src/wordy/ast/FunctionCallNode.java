@@ -20,7 +20,7 @@ import wordy.interpreter.WordyRuntimeTypeError;
  */
 public class FunctionCallNode extends StatementNode {
     private final VariableNode name;
-    private List<ExpressionNode> arguments;
+    private final List<ExpressionNode> arguments;
     public WordyValue returnValue;
 
     public FunctionCallNode(VariableNode name, List<ExpressionNode> arguments) {
