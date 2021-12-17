@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.TreeMap;
 
 import wordy.ast.values.WordyClosure;
 import wordy.ast.values.WordyValue;
@@ -45,9 +45,13 @@ public class FunctionCallNode extends StatementNode {
     }
 
     @Override
-    // TODO: What are the children of a FunctionCallNode?
     public Map<String, ASTNode> getChildren() {
-        return null;
+        Map<String, ASTNode> map = new TreeMap<String, ASTNode>();
+        map.put("name", name);
+        for (int i = 0; i < arguments.size(); i++) {
+            map.put("arg " + (i + 1), arguments.get(i));
+        }
+        return map;
     }
 
     @Override
@@ -68,7 +72,7 @@ public class FunctionCallNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "FunctionCallNode{name=" + name + '}';
+        return "FunctionCallNode{name=" + name + ", args=" + arguments + '}';
     }
 
     @Override

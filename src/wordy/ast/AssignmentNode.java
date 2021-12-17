@@ -62,7 +62,7 @@ public class AssignmentNode extends StatementNode {
     public String toString() {
         return "AssignmentStatement{"
             + "variable='" + variable + '\''
-            + ", expression=" + rightHandNode
+            + ", value=" + rightHandNode
             + '}';
     }
 
@@ -79,12 +79,4 @@ public class AssignmentNode extends StatementNode {
             throw new WordyRuntimeTypeError("Right hand side must be an expression or function call.");
         }
     }
-
-    // @Override
-    // public void compile(PrintWriter out) {
-    // variable.compile(out);
-    // out.print("=");
-    // expression.compile(out);
-    // out.print(";");
-    // }
 }

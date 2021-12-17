@@ -2,7 +2,6 @@ package wordy.ast.values;
 
 import java.util.List;
 
-import wordy.ast.BlockNode;
 import wordy.ast.StatementNode;
 import wordy.interpreter.EvaluationContext;
 
