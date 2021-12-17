@@ -65,11 +65,14 @@ public class FunctionDeclarationNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "FunctionDeclarationNode";
+        return "FunctionDeclarationNode{params=" + params.toString() + ", body=" + body.toString();
     }
 
     @Override
     protected String describeAttributes() {
+        if (params.size() == 0) {
+            return "";
+        }
         StringBuilder paramsStr = new StringBuilder("[");
         for (int i = 0; i < params.size(); i++) {
             if (i != params.size() - 1) {
@@ -78,7 +81,7 @@ public class FunctionDeclarationNode extends ExpressionNode {
                 paramsStr.append(params.get(i).describeAttributes() + "]");
             }
         }
-        return "(params=" + paramsStr + ", body=" + body.describeAttributes() + ')';
+        return "(params=" + paramsStr + ')';
     }
 
     @Override

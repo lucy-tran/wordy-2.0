@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import javax.management.RuntimeErrorException;
+
 import wordy.ast.values.WordyClosure;
 import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
@@ -77,7 +79,9 @@ public class FunctionCallNode extends StatementNode {
 
     @Override
     protected String describeAttributes() {
-        return "(name=\"" + name + "\")";
+        String numOfArgs = "(%d %s)"
+            .formatted(arguments.size(), arguments.size() == 1 ? "argument" : "arguments");
+        return "(name=" + name + ", " + numOfArgs + ")";
     }
 
     @Override
@@ -98,7 +102,7 @@ public class FunctionCallNode extends StatementNode {
                 functionContext.set(params.get(i), arguments.get(i).doEvaluate(context));
             }
         } catch (IndexOutOfBoundsException exception) {
-            System.out.println("The number of arguments must match the number of parameters!");
+            throw new RuntimeException("The number of arguments must match the number of parameters!");
         }
 
         try {

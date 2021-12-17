@@ -69,12 +69,23 @@ public class Playground {
 
             Set minusOne to function of () in: return 1 minus 2.
 
-            Set x to function of (a, b) in:
+            Set greaterThan to function of (a, b) in:
                 Set compare to 0.
                 If a is greater than b then return 1.
-                IF a is less than b then return minusOne executed.
+                If a is less than b then return minusOne executed.
                 return compare..
-            x executed.
+            greaterThan of (2, 1) executed.
+
+            Set sumOnetoX to function of (x) in:
+                Set count to 1.
+                Set sum to 0.
+                Loop:
+                    Set sum to sum plus count.
+                    Set count to count plus 1.
+                    If count is equal to x plus 1 then exit loop.
+                End of loop.
+                Return sum..
+            Set result to sumOneToX of (10) executed.
             """);
 
         astDump = new JTextArea();

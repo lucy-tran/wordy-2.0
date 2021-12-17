@@ -2,6 +2,7 @@ package wordy.ast.values;
 
 import java.util.List;
 
+import wordy.ast.BlockNode;
 import wordy.ast.StatementNode;
 import wordy.interpreter.EvaluationContext;
 
@@ -27,6 +28,16 @@ public class WordyClosure implements WordyValue {
     @Override
     public WordyType getType() {
         return WordyType.Closure;
+    }
+
+    @Override
+    public String toString() {
+        if (body instanceof BlockNode) {
+            BlockNode blockNode = ((BlockNode) body);
+            return "WordyClosure(params=" + paramNames.toString() + ", body=" + blockNode.describeAttributes() + ")";
+        } else {
+            return "WordyClosure(params=" + paramNames.toString() + ", body=" + body.toString() + ")";
+        }
     }
 
     @Override
