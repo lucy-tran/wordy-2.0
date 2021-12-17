@@ -71,19 +71,19 @@ public class InterpreterTest {
             + "if x equals 12 then set eq to x else set eq to eq minus 1."
             + "if x is greater than 12 then set gt to x else set gt to gt minus 1.";
 
-        context.set("x", 11);
+        context.set("x", new WordyDouble(11));
         runProgram(program);
         assertVariableEquals("lt", new WordyDouble(11));
         assertVariableEquals("eq", new WordyDouble(-1));
         assertVariableEquals("gt", new WordyDouble(-1));
 
-        context.set("x", 12);
+        context.set("x", new WordyDouble(12));
         runProgram(program);
         assertVariableEquals("lt", new WordyDouble(10));
         assertVariableEquals("eq", new WordyDouble(12));
         assertVariableEquals("gt", new WordyDouble(-2));
 
-        context.set("x", 13);
+        context.set("x", new WordyDouble(13));
         runProgram(program);
         assertVariableEquals("lt", new WordyDouble(9));
         assertVariableEquals("eq", new WordyDouble(11));
