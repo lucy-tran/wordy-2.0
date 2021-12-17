@@ -58,6 +58,7 @@ public class Playground {
             Set a to 1.
             Set b to 1.
             Set count to 10.
+
             Loop:
                 If count is less than 1 then exit loop.
                 Set next to a plus b.
@@ -65,6 +66,15 @@ public class Playground {
                 Set b to next.
                 Set count to count minus 1.
             End of loop.
+
+            Set minusOne to function of () in: return 1 minus 2.
+
+            Set x to function of (a, b) in:
+                Set compare to 0.
+                If a is greater than b then return 1.
+                IF a is less than b then return minusOne executed.
+                return compare..
+            x executed.
             """);
 
         astDump = new JTextArea();

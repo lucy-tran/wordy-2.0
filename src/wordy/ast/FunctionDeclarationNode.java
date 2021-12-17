@@ -65,7 +65,7 @@ public class FunctionDeclarationNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "FunctionDeclarationNode{params=" + params + ", body=" + body + '}';
+        return "FunctionDeclarationNode";
     }
 
     @Override

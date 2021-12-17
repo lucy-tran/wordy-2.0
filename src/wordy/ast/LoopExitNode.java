@@ -1,6 +1,5 @@
 package wordy.ast;
 
-import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 

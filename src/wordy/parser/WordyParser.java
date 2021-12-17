@@ -8,7 +8,6 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
-import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -296,7 +295,6 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule VariableGroup(Var<List<VariableNode>> list) {
-        System.out.println("variableGroup");
         return Sequence(
             Sequence(
                 OptionalSurroundingSpace("("),
