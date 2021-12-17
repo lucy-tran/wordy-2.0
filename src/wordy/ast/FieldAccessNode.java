@@ -2,11 +2,14 @@ package wordy.ast;
 
 import java.util.Map;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import wordy.ast.values.WordyDouble;
 import wordy.ast.values.WordyValue;
+import wordy.demo.Playground;
 import wordy.interpreter.EvaluationContext;
 
 public class FieldAccessNode extends ExpressionNode{
@@ -20,7 +23,14 @@ public class FieldAccessNode extends ExpressionNode{
 
     @Override
     protected WordyValue doEvaluate(EvaluationContext context) {
-        return new EvaluationContext();
+        // List<String> paramNames = new ArrayList<>();
+        // for (VariableNode param : params) {
+        //     paramNames.add(param.getName());
+        // }
+        // WordyClosure closure = new WordyClosure(paramNames, body);
+        // return closure;
+
+        return context.get(RecordName);
     }
 
     @Override

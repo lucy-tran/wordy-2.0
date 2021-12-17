@@ -20,7 +20,6 @@ public class FieldAssignmentNode extends StatementNode{
     private final BlockNode records;
 
     public FieldAssignmentNode (FieldAccessNode variable, BlockNode records) {
-        // Here, expression may be a FunctionDeclarationNode
         this.variable = variable;
         this.records= records;
     }
@@ -28,7 +27,6 @@ public class FieldAssignmentNode extends StatementNode{
     @Override
     protected void doRun(EvaluationContext context) {
         context.set(variable.getName(), variable.doEvaluate(context));
-        
     }
 
     @Override
