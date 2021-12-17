@@ -10,8 +10,6 @@ import static wordy.parser.WordyParser.parseStatement;
 
 import wordy.ast.values.WordyDouble;
 import wordy.ast.values.WordyValue;
-import wordy.ast.values.WordyNull;
-
 
 public class InterpreterTest {
     private final EvaluationContext context = new EvaluationContext();

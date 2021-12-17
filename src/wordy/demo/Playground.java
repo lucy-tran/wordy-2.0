@@ -220,40 +220,7 @@ public class Playground {
         return new JLabel().getFont();  // returns system default
     }
 
-    public static double randomCalc(double m, double n, double o) {
-        // all statements in the body of this function runs under the context of this function.
-        // In other words, functions should be treated as a program itself, with its own evaluation context.
-        o = o + 1;
-        return (m - n) * 0;
-    }
-
-    public static double mean(double a, double b) {
-        a = 4;
-        b = b + randomCalc(a, b, 4);
-
-        // When we call a function, we need to loop over the arguments, and for each argument:
-        // 1. Evaluate the argument to a double:
-        // - If the argument is a VariableNode, evaluate the value of it from the program's context.
-        // - If the argument is a constant node, extract the double value of it
-        // - If the argument is a function, take the returnValue of it
-        // 2. Assign the double value of the argument to the corresponding variable in the function's
-        // context.
-
-        // TODO: Since Java doesn't allow for nested methods, should we make all functions compile
-        // to lambda expressions? See the result of the Compiled tab in Wordy Playground.
-        // static double randomFunc() {
-        // return 3.0;
-        // }return(a+b)/2;
-
-        return (a - b);
-
-    }
-
     public static void main(String[] args) {
         new Playground();
-        double x = 2;
-        double y = 10;
-        System.out.println(mean(x, y));
-        System.out.println(x);
     }
 }

@@ -75,12 +75,19 @@ public class BinaryExpressionNode extends ExpressionNode {
         WordyValue rightValue = rhs.doEvaluate(context);
         WordyValue leftValue = lhs.doEvaluate(context);
 
+        if (rightValue == null) { // e.g. a variable doesn't exist yet
+            rightValue = new WordyDouble(0);
+        }
+        if (leftValue == null) {
+            leftValue = new WordyDouble(0);
+        }
+
         if (!(rightValue instanceof WordyDouble) || !(leftValue instanceof WordyDouble)) {
             throw new WordyRuntimeTypeError("Cannot do mathematical operations on non-numeric types.");
         }
 
         double right = ((WordyDouble) rightValue).getValue();
-        double left = ((WordyDouble) lhs.doEvaluate(context)).getValue();
+        double left = ((WordyDouble) leftValue).getValue();
 
         switch (operator) {
             case ADDITION:

@@ -8,11 +8,8 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
-import java.beans.Expression;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import wordy.ast.ASTNode;
 import wordy.ast.AssignmentNode;
@@ -26,7 +23,6 @@ import wordy.ast.FunctionDeclarationNode;
 import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
-import wordy.ast.RecordNode;
 import wordy.ast.StatementNode;
 import wordy.ast.VariableNode;
 
@@ -207,16 +203,6 @@ public class WordyParser extends BaseParser<ASTNode> {
             OptionalSurroundingSpace(":"),
             Statement(),
             push(new FunctionDeclarationNode((StatementNode) pop(), list.get())));
-    }
-
-    Rule Record() {
-        Var<List<AssignmentNode>> list = new Var<>(new ArrayList<>());
-        return Sequence(KeyPhrase("{"),
-            OneOrMore(
-                Assignment(),
-                OptionalSurroundingSpace("."),
-                list.get().add((AssignmentNode) pop())),
-            push(new RecordNode(list.get())), KeyPhrase("}"));
     }
 
     Rule AdditiveExpression() {

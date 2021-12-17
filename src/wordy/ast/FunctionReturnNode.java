@@ -29,7 +29,10 @@ public final class FunctionReturnNode extends StatementNode {
 
     @Override
     public Map<String, ASTNode> getChildren() {
-        return Collections.emptyMap();
+        if (returnNode == null) {
+            return Collections.emptyMap();
+        }
+        return Map.of("returnNode", returnNode);
     }
 
     @Override
@@ -45,7 +48,10 @@ public final class FunctionReturnNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "FunctionReturnNode{expression=" + returnNode.toString() + "}";
+        if (returnNode == null) {
+            return "FunctionReturnNode";
+        }
+        return "FunctionReturnNode{returnNode=" + returnNode.toString() + "}";
     }
 
     @Override
