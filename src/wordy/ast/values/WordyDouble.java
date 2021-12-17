@@ -27,7 +27,17 @@ public class WordyDouble implements WordyValue {
 
     @Override
     public WordyType getType() {
-        // TODO Auto-generated method stub
         return WordyType.Double;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof WordyDouble){
+            WordyDouble a = (WordyDouble) obj;
+            return value==a.getValue();
+        }
+        else{
+            return false;
+        }
     }
 }

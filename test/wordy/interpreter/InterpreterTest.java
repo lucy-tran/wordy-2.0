@@ -2,81 +2,92 @@ package wordy.interpreter;
 
 import org.junit.jupiter.api.Test;
 
-import wordy.ast.values.WordyDouble;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static wordy.parser.WordyParser.parseExpression;
 import static wordy.parser.WordyParser.parseProgram;
 import static wordy.parser.WordyParser.parseStatement;
 
+import wordy.ast.values.WordyDouble;
+import wordy.ast.values.WordyValue;
+import wordy.ast.values.WordyNull;
+
+
+
+
 public class InterpreterTest {
     private final EvaluationContext context = new EvaluationContext();
 
     @Test
     void evaluateConstant() {
-        assertEvaluationEquals(2001, "2001");
-        assertEvaluationEquals(-3.5, "-3.5");
+        WordyDouble a = new WordyDouble(2001);
+        assertEvaluationEquals(a, "2001");
+        WordyDouble b = new WordyDouble(-3.5);
+        assertEvaluationEquals(b, "-3.5");
     }
 
     @Test
     void evaluateVariable() {
-        context.set("question", new WordyDouble(54));
-        context.set("answer", new WordyDouble(42));
-        assertEvaluationEquals(54, "question");
-        assertEvaluationEquals(42, "answer");
-        assertEvaluationEquals(0, "fish");
+        WordyDouble a = new WordyDouble(54);
+        WordyDouble b = new WordyDouble(42);
+        context.set("question", a);
+        context.set("answer", b);
+        assertEvaluationEquals(a, "question");
+        assertEvaluationEquals(b, "answer");
+        assertEvaluationEquals(null, "fish");
     }
 
     @Test
     void evaluateBinaryExpression() {
-        assertEvaluationEquals(5, "2 plus 3");
-        assertEvaluationEquals(-1, "2 minus 3");
-        assertEvaluationEquals(6, "2 times 3");
-        assertEvaluationEquals(2.0 / 3, "2 divided by 3");
-        assertEvaluationEquals(4, "2 squared");
-        assertEvaluationEquals(8, "2 to the power of 3");
-        assertEvaluationEquals(511.5, "2 to the power of 3 squared minus 1 divided by 2");
+        assertEvaluationEquals(new WordyDouble(5), "2 plus 3");
+        assertEvaluationEquals(new WordyDouble(-1), "2 minus 3");
+        assertEvaluationEquals(new WordyDouble(6), "2 times 3");
+        double a = 2.0/3;
+        assertEvaluationEquals(new WordyDouble(a), "2 divided by 3");
+        assertEvaluationEquals(new WordyDouble(4), "2 squared");
+        assertEvaluationEquals(new WordyDouble(8), "2 to the power of 3");
+        assertEvaluationEquals(new WordyDouble(511.5), "2 to the power of 3 squared minus 1 divided by 2");
     }
 
     @Test
     void executeAssignment() {
         runStatement("set x to 17");
-        assertVariableEquals("x", 17);
+        assertVariableEquals("x", new WordyDouble(17));
         runStatement("set y to x squared");
-        assertVariableEquals("y", 289);
+        assertVariableEquals("y", new WordyDouble(289));
     }
 
     @Test
     void executeBlock() {
         runProgram("set x to 17. set y to x squared.");
-        assertVariableEquals("x", 17);
-        assertVariableEquals("y", 289);
+        assertVariableEquals("x", new WordyDouble(17));
+        assertVariableEquals("y", new WordyDouble(289));
     }
 
     @Test
     void executeConditional() {
-        String program = "if x is less than 12 then set lt to x else set lt to lt minus 1."
+        String program =
+            "if x is less than 12 then set lt to x else set lt to lt minus 1."
             + "if x equals 12 then set eq to x else set eq to eq minus 1."
             + "if x is greater than 12 then set gt to x else set gt to gt minus 1.";
 
-        context.set("x", new WordyDouble(11));
+        context.set("x", 11);
         runProgram(program);
-        assertVariableEquals("lt", 11);
-        assertVariableEquals("eq", -1);
-        assertVariableEquals("gt", -1);
+        assertVariableEquals("lt", new WordyDouble(11));
+        assertVariableEquals("eq", new WordyDouble(-1));
+        assertVariableEquals("gt", new WordyDouble(-1));
 
-        context.set("x", new WordyDouble(12));
+        context.set("x", 12);
         runProgram(program);
-        assertVariableEquals("lt", 10);
-        assertVariableEquals("eq", 12);
-        assertVariableEquals("gt", -2);
+        assertVariableEquals("lt", new WordyDouble(10));
+        assertVariableEquals("eq", new WordyDouble(12));
+        assertVariableEquals("gt", new WordyDouble(-2));
 
-        context.set("x", new WordyDouble(13));
+        context.set("x", 13);
         runProgram(program);
-        assertVariableEquals("lt", 9);
-        assertVariableEquals("eq", 11);
-        assertVariableEquals("gt", 13);
+        assertVariableEquals("lt", new WordyDouble(9));
+        assertVariableEquals("eq", new WordyDouble(11));
+        assertVariableEquals("gt", new WordyDouble(13));
     }
 
     @Test
@@ -87,13 +98,13 @@ public class InterpreterTest {
     @Test
     void executeLoop() {
         runProgram("loop: set x to x plus 1. if x equals 10 then exit loop. set y to y plus x squared. end of loop.");
-        assertVariableEquals("x", 10);
-        assertVariableEquals("y", 285);
+        assertVariableEquals("x", new WordyDouble(10));
+        assertVariableEquals("y", new WordyDouble(285));
     }
 
     // ––––––– Helpers –––––––
 
-    private void assertEvaluationEquals(double expected, String expression) {
+    private void assertEvaluationEquals(WordyValue expected, String expression) {
         assertEquals(expected, parseExpression(expression).evaluate(context));
     }
 
@@ -105,7 +116,7 @@ public class InterpreterTest {
         parseProgram(program).run(context);
     }
 
-    private void assertVariableEquals(String name, double expectedValue) {
+    private void assertVariableEquals(String name, WordyValue expectedValue) {
         assertEquals(expectedValue, context.get(name));
     }
 }

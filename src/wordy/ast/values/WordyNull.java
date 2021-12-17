@@ -9,4 +9,14 @@ public class WordyNull implements WordyValue {
         // TODO Auto-generated method stub
         return WordyType.Null;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof WordyNull){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
