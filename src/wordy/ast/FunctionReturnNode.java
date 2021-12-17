@@ -1,6 +1,5 @@
 package wordy.ast;
 
-import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 
@@ -63,10 +62,12 @@ public final class FunctionReturnNode extends StatementNode {
 
     @Override
     public String toString() {
-        if (returnNode == null) {
-            return "FunctionReturnNode";
-        }
-        return "FunctionReturnNode{returnNode=" + returnNode.toString() + "}";
+        return "FunctionReturnNode";
+    }
+
+    @Override
+    public String describeAttributes() {
+        return returnNode == null ? "(no return values)" : "";
     }
 
     @Override

@@ -1,6 +1,5 @@
 package wordy.ast;
 
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,7 +58,7 @@ public class BlockNode extends StatementNode {
     }
 
     @Override
-    protected String describeAttributes() {
+    public String describeAttributes() {
         return "(%d %s)"
             .formatted(statements.size(), statements.size() == 1 ? "child" : "children");
     }
