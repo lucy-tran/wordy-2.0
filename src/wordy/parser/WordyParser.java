@@ -8,6 +8,7 @@ import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Var;
 
+import java.beans.Expression;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,9 @@ import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
 import wordy.ast.ExpressionNode;
+import wordy.ast.FunctionCallNode;
 import wordy.ast.FunctionDeclarationNode;
+import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
 import wordy.ast.RecordNode;
@@ -97,11 +100,33 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule FunctionCall() {
-        return Sequence(Variable(), KeyPhrase("executed"));
+        Var<List<ExpressionNode>> list = new Var<>(new ArrayList<>());
+        return Sequence(
+            FirstOf(
+                Sequence(
+                    Variable(),
+                    KeyPhrase("of"),
+                    ExpressionGroup(list),
+                    push(new FunctionCallNode((VariableNode) pop(), list.get()))),
+                Sequence(
+                    Variable(),
+                    push(new FunctionCallNode((VariableNode) pop())))),
+            KeyPhrase("executed"));
     }
 
     Rule FunctionReturn() {
-        return Sequence(KeyPhrase("return"), FirstOf(Expression(), FunctionCall()));
+        return FirstOf(
+            Sequence(
+                KeyPhrase("return"),
+                FunctionCall(),
+                push(new FunctionReturnNode((FunctionCallNode) pop()))),
+            Sequence(
+                KeyPhrase("return"),
+                Expression(),
+                push(new FunctionReturnNode((ExpressionNode) pop()))),
+            Sequence(
+                KeyPhrase("return"),
+                push(new FunctionReturnNode())));
     }
 
     Rule Conditional() {
@@ -171,15 +196,16 @@ public class WordyParser extends BaseParser<ASTNode> {
         Var<List<VariableNode>> list = new Var<>(new ArrayList<>());
         return Sequence(
             KeyPhrase("function of"),
-            OptionalSurroundingSpace("("),
-            ZeroOrMore(
-                Variable(),
-                OptionalSurroundingSpace(","),
-                list.get().add((VariableNode) pop())),
-            OptionalSurroundingSpace(")"),
+            // OptionalSurroundingSpace("("),
+            // ZeroOrMore(
+            // Variable(),
+            // OptionalSurroundingSpace(","),
+            // list.get().add((VariableNode) pop())),
+            // OptionalSurroundingSpace(")"),
+            VariableGroup(list),
             KeyPhrase("in"),
             OptionalSurroundingSpace(":"),
-            Block(),
+            Statement(),
             push(new FunctionDeclarationNode((StatementNode) pop(), list.get())));
     }
 
@@ -272,6 +298,34 @@ public class WordyParser extends BaseParser<ASTNode> {
                 "_")),
             push(new VariableNode(matchOrDefault("0"))),
             OptionalSpace());
+    }
+
+    Rule VariableGroup(Var<List<VariableNode>> list) {
+        return Sequence(
+            Sequence(
+                OptionalSurroundingSpace("("),
+                Variable(),
+                list.get().add((VariableNode) pop())),
+            ZeroOrMore(
+                Sequence(
+                    OptionalSurroundingSpace(","),
+                    Variable(),
+                    list.get().add((VariableNode) pop()))),
+            OptionalSurroundingSpace(")"));
+    }
+
+    Rule ExpressionGroup(Var<List<ExpressionNode>> list) {
+        return Sequence(
+            Sequence(
+                OptionalSurroundingSpace("("),
+                Variable(),
+                list.get().add((ExpressionNode) pop())),
+            ZeroOrMore(
+                Sequence(
+                    OptionalSurroundingSpace(","),
+                    Variable(),
+                    list.get().add((ExpressionNode) pop()))),
+            OptionalSurroundingSpace(")"));
     }
 
     Rule KeyPhrase(String phrase) {

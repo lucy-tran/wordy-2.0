@@ -19,16 +19,16 @@ import wordy.interpreter.WordyRuntimeTypeError;
  * This expression evaluates to the current value of the variable.
  */
 public class FunctionCallNode extends StatementNode {
-    private final String name;
+    private final VariableNode name;
     private List<ExpressionNode> arguments;
     public WordyValue returnValue;
 
-    public FunctionCallNode(String name, List<ExpressionNode> arguments) {
+    public FunctionCallNode(VariableNode name, List<ExpressionNode> arguments) {
         this.name = name;
         this.arguments = List.copyOf(arguments);
     }
 
-    public FunctionCallNode(String name, ExpressionNode... arguments) {
+    public FunctionCallNode(VariableNode name, ExpressionNode... arguments) {
         this.name = name;
         this.arguments = Arrays.asList(arguments);
     }
@@ -37,7 +37,7 @@ public class FunctionCallNode extends StatementNode {
      * The name of the function.
      */
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public WordyValue getReturnValue() {
@@ -58,7 +58,7 @@ public class FunctionCallNode extends StatementNode {
             return false;
 
         FunctionCallNode that = (FunctionCallNode) o;
-        return this.name.equals(that.getName());
+        return this.name.getName().equals(that.getName());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class FunctionCallNode extends StatementNode {
 
     @Override
     protected void doRun(EvaluationContext context) {
-        WordyValue storedValue = context.get(name);
+        WordyValue storedValue = context.get(name.getName());
 
         if (!(storedValue instanceof WordyClosure)) {
             throw new WordyRuntimeTypeError("Variable is of type " + storedValue.getType().toString() + ". Please make sure it is a closure.");
