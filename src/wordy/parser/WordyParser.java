@@ -25,6 +25,7 @@ import wordy.ast.FunctionDeclarationNode;
 import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
+import wordy.ast.RecordNode;
 import wordy.ast.StatementNode;
 import wordy.ast.VariableNode;
 
@@ -90,7 +91,7 @@ public class WordyParser extends BaseParser<ASTNode> {
     Rule Statement() {
         return FirstOf(
             Assignment(),
-            Record(),
+            RecordAssignment(),
             Conditional(),
             FunctionReturn(),
             Loop(),
@@ -165,14 +166,14 @@ public class WordyParser extends BaseParser<ASTNode> {
                 (StatementNode) pop())));
     }
 
-    Rule Record() {
+    Rule RecordAssignment() {
         return Sequence(
-            Field(),
+            Record(),
             KeyPhrase("has"),
             OptionalSurroundingSpace(":"),
             Block(),
             KeyPhrase("end of record"),
-            push(new FieldAssignmentNode((FieldAccessNode) pop(1), (BlockNode) pop())));
+            push(new FieldAssignmentNode((RecordNode) pop(1), (BlockNode) pop())));
     }
 
     Rule Loop() {
@@ -307,13 +308,13 @@ public class WordyParser extends BaseParser<ASTNode> {
             OptionalSpace());
     }
 
-    Rule Field() {
+    Rule Record() {
         return Sequence(
             OneOrMore(FirstOf(
                 CharRange('a', 'z'),
                 CharRange('A', 'Z'),
                 "_")),
-            push(new FieldAccessNode(matchOrDefault("0"))),
+            push(new RecordNode(matchOrDefault("0"))),
             OptionalSpace());
     }
 

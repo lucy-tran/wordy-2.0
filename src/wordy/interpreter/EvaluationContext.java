@@ -18,7 +18,7 @@ import wordy.ast.values.WordyValue;
  *
  * @see wordy.compiler.WordyExecutable.ExecutionContext for the compiler counterpart to this class
  */
-public class EvaluationContext implements WordyValue{
+public class EvaluationContext{
     private final Map<String, WordyValue> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 
@@ -67,11 +67,5 @@ public class EvaluationContext implements WordyValue{
             STARTED,
             COMPLETED
         }
-    }
-
-    @Override
-    public WordyType getType() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

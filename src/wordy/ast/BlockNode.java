@@ -27,6 +27,11 @@ public class BlockNode extends StatementNode {
         this.statements = Arrays.asList(statements);
     }
 
+    public List<StatementNode> getStatements(){
+        return statements;
+    }
+
+
     @Override
     public Map<String, ASTNode> getChildren() {
         Map<String, ASTNode> result = new LinkedHashMap<>();

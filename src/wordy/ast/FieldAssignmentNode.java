@@ -1,9 +1,13 @@
 package wordy.ast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import static wordy.ast.Utils.orderedMap;
 
+import wordy.ast.values.WordyClosure;
+import wordy.ast.values.WordyRecord;
 import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 
@@ -11,7 +15,7 @@ public class FieldAssignmentNode extends StatementNode{
         /**
      * The left-hand side (LHS) of the assignment, the variable whose value will be updated.
      */
-    private final FieldAccessNode variable;
+    private final RecordNode variable;
 
     /**
      * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to the
@@ -19,14 +23,15 @@ public class FieldAssignmentNode extends StatementNode{
      */
     private final BlockNode records;
 
-    public FieldAssignmentNode (FieldAccessNode variable, BlockNode records) {
+    public FieldAssignmentNode (RecordNode variable, BlockNode records) {
         this.variable = variable;
         this.records= records;
     }
 
     @Override
     protected void doRun(EvaluationContext context) {
-        context.set(variable.getName(), variable.doEvaluate(context));
+        WordyRecord closure = new WordyRecord(records);
+        context.set(variable.getName(), closure);
     }
 
     @Override

@@ -330,16 +330,16 @@ public class WordyParserTest {
     }
 
 
-    @Test
-    void testFieldAssignment() {
-        assertEquals(
-            new FieldAssignmentNode(
-                new FieldAccessNode("a"),
-                new BlockNode(new AssignmentNode(
-                    new VariableNode("b"),
-                    new ConstantNode(1)))),
-            parseStatement("A has: Set b to 1. End of record"));
-    }
+    // @Test
+    // void testFieldAssignment() {
+    //     assertEquals(
+    //         new FieldAssignmentNode(
+    //             new FieldAccessNode("a"),
+    //             new BlockNode(new AssignmentNode(
+    //                 new VariableNode("b"),
+    //                 new ConstantNode(1)))),
+    //         parseStatement("A has: Set b to 1. End of record"));
+    // }
 
     @Test
     void testProgram() {

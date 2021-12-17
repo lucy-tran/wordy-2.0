@@ -12,23 +12,17 @@ import wordy.ast.values.WordyValue;
 import wordy.demo.Playground;
 import wordy.interpreter.EvaluationContext;
 
-public class FieldAccessNode extends ExpressionNode{
+public class RecordNode extends ExpressionNode{
     private final String RecordName;
     // private final String FieldName;
 
-    public FieldAccessNode(String RecordName){
+    public RecordNode(String RecordName){
         // this.FieldName = FieldName;
         this.RecordName = RecordName;
     }
 
     @Override
     protected WordyValue doEvaluate(EvaluationContext context) {
-        // List<String> paramNames = new ArrayList<>();
-        // for (VariableNode param : params) {
-        //     paramNames.add(param.getName());
-        // }
-        // WordyClosure closure = new WordyClosure(paramNames, body);
-        // return closure;
 
         return context.get(RecordName);
     }
@@ -44,7 +38,7 @@ public class FieldAccessNode extends ExpressionNode{
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        FieldAccessNode that = (FieldAccessNode) o;
+        RecordNode that = (RecordNode) o;
         return this.RecordName.equals(that.RecordName);
     }
 

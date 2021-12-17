@@ -67,6 +67,8 @@ public class Playground {
                 Set count to count minus 1.
             End of loop.
 
+            RecordA has: Set name to 3. Set age to 21. End of record.
+
             Set minusOne to function of () in: return 1 minus 2.
 
             Set greaterThan to function of (a, b) in:

@@ -4,4 +4,5 @@ public enum WordyType {
     Closure,
     Double,
     Null,
+    Record
 }
