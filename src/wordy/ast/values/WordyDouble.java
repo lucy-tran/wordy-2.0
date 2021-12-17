@@ -26,4 +26,15 @@ public class WordyDouble implements WordyValue {
     public WordyType getType() {
         return WordyType.Double;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof WordyDouble){
+            WordyDouble a = (WordyDouble) obj;
+            return value==a.getValue();
+        }
+        else{
+            return false;
+        }
+    }
 }
