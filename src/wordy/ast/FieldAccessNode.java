@@ -35,7 +35,7 @@ public class FieldAccessNode extends ExpressionNode{
         if (o == null || getClass() != o.getClass())
             return false;
         FieldAccessNode that = (FieldAccessNode) o;
-        return this.RecordName.equals(that.RecordName);//this.FieldName.equals(that.FieldName) & 
+        return this.RecordName.equals(that.RecordName);
     }
 
     @Override
@@ -51,6 +51,10 @@ public class FieldAccessNode extends ExpressionNode{
     @Override
     protected String describeAttributes() {
         return "(RecordName=\"" + RecordName + "\" )"; //",FieldName =" + FieldName
+    }
+
+    public String getName() {
+        return RecordName;
     }
 
     

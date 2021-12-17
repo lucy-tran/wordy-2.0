@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import static wordy.ast.Utils.orderedMap;
 
+import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
 
 public class FieldAssignmentNode extends StatementNode{
@@ -16,7 +17,7 @@ public class FieldAssignmentNode extends StatementNode{
      * The right-hand side (RHS) of the assignment, the expression whose value will be assigned to the
      * LHS variable.
      */
-    private final ASTNode records;
+    private final BlockNode records;
 
     public FieldAssignmentNode (FieldAccessNode variable, BlockNode records) {
         // Here, expression may be a FunctionDeclarationNode
@@ -26,8 +27,7 @@ public class FieldAssignmentNode extends StatementNode{
 
     @Override
     protected void doRun(EvaluationContext context) {
-        // TODO Auto-generated method stub
-        double atest = 1;
+        context.set(variable.getName(), variable.doEvaluate(context));
         
     }
 
@@ -39,9 +39,14 @@ public class FieldAssignmentNode extends StatementNode{
     }
 
     @Override
-    public boolean equals(Object obj) {
-        // TODO Auto-generated method stub
-        return true;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FieldAssignmentNode that = (FieldAssignmentNode) o;
+        return variable.equals(that.variable)
+            && records.equals(that.records);
     }
 
     @Override
