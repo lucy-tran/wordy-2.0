@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import wordy.ast.ASTNode;
+import wordy.ast.values.WordyType;
 import wordy.ast.values.WordyValue;
 
 /**
@@ -17,7 +18,7 @@ import wordy.ast.values.WordyValue;
  *
  * @see wordy.compiler.WordyExecutable.ExecutionContext for the compiler counterpart to this class
  */
-public class EvaluationContext {
+public class EvaluationContext implements WordyValue{
     private final Map<String, WordyValue> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 
@@ -66,5 +67,11 @@ public class EvaluationContext {
             STARTED,
             COMPLETED
         }
+    }
+
+    @Override
+    public WordyType getType() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

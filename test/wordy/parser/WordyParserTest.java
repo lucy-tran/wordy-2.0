@@ -8,6 +8,8 @@ import wordy.ast.BinaryExpressionNode;
 import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
+import wordy.ast.FieldAccessNode;
+import wordy.ast.FieldAssignmentNode;
 import wordy.ast.FunctionCallNode;
 import wordy.ast.FunctionDeclarationNode;
 import wordy.ast.FunctionReturnNode;
@@ -325,6 +327,18 @@ public class WordyParserTest {
                         new ConstantNode(10),
                         new ConstantNode(2))))),
             parseStatement("return func of (a, 3, 10 divided by 2) executed"));
+    }
+
+
+    @Test
+    void testFieldAssignment() {
+        assertEquals(
+            new FieldAssignmentNode(
+                new FieldAccessNode("a"),
+                new BlockNode(new AssignmentNode(
+                    new VariableNode("b"),
+                    new ConstantNode(1)))),
+            parseStatement("A has: Set b to 1. End of record"));
     }
 
     @Test
