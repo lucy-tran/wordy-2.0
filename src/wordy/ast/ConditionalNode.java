@@ -7,6 +7,7 @@ import java.util.Objects;
 import wordy.ast.values.WordyDouble;
 import wordy.ast.values.WordyValue;
 import wordy.interpreter.EvaluationContext;
+import wordy.interpreter.WordyRuntimeTypeError;
 
 import static wordy.ast.Utils.orderedMap;
 
@@ -87,8 +88,9 @@ public class ConditionalNode extends StatementNode {
         WordyValue lhs_value = lhs.doEvaluate(context);
         WordyValue rhs_value = rhs.doEvaluate(context);
 
-        assert lhs_value instanceof WordyDouble;
-        assert rhs_value instanceof WordyDouble;
+        if (!(lhs_value instanceof WordyDouble) || !(rhs_value instanceof WordyDouble)) {
+            throw new WordyRuntimeTypeError("Cannot do mathematical operations on non-numeric types.");
+        }
 
         double left = ((WordyDouble) lhs_value).getValue();
         double right = ((WordyDouble) rhs_value).getValue();

@@ -18,6 +18,10 @@ public final class ConstantNode extends ExpressionNode {
         this.wordyDouble = new WordyDouble(value);
     }
 
+    public ConstantNode(WordyDouble value) {
+        this.wordyDouble = value;
+    }
+
     @Override
     public Map<String, ASTNode> getChildren() {
         return Collections.emptyMap();

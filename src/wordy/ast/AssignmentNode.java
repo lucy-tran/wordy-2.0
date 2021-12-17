@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import wordy.interpreter.EvaluationContext;
+import wordy.interpreter.WordyRuntimeTypeError;
 
 import static wordy.ast.Utils.orderedMap;
 
@@ -74,6 +75,8 @@ public class AssignmentNode extends StatementNode {
             FunctionCallNode functionCallNode = ((FunctionCallNode) rightHandNode);
             functionCallNode.doRun(context);
             context.set(variable.getName(), functionCallNode.getReturnValue());
+        } else {// This is just to make sure rhs is not a statement node other than FunctionCallNode.
+            throw new WordyRuntimeTypeError("Right hand side must be an expression or function call.");
         }
     }
 
