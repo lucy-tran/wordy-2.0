@@ -16,6 +16,7 @@ import wordy.ast.FunctionReturnNode;
 import wordy.ast.VariableNode;
 import wordy.ast.values.WordyClosure;
 import wordy.ast.values.WordyDouble;
+import wordy.ast.values.WordyRecord;
 import wordy.ast.values.WordyValue;
 
 public class InterpreterTest {
@@ -147,6 +148,16 @@ public class InterpreterTest {
     void executeFunctionReturn() {
         assertThrows(FunctionReturned.class, () -> runStatement("return"));
         assertThrows(FunctionReturned.class, () -> runStatement("return (a plus b) divided by 2"));
+    }
+
+    @Test
+    void executeRecord() {
+        String recordExp = "record where: (numStudents is 15, classCode is 155, room is record where: (number is 250, area is 10 times 5))";
+        String statement = "set myClass to " + recordExp;
+        runStatement(statement);
+        assertEvaluationEquals(
+            context.get("myclass"),
+            recordExp);
     }
 
     // ––––––– Helpers –––––––

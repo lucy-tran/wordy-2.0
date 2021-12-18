@@ -1,48 +1,49 @@
 package wordy.ast.values;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import wordy.ast.AssignmentNode;
-import wordy.ast.BlockNode;
-import wordy.ast.StatementNode;
 import wordy.interpreter.EvaluationContext;
 
-public class WordyRecord implements WordyValue{
+public class WordyRecord implements WordyValue {
+    // private BlockNode body;
+    // A WordyRecord value should not have a body, it should only store key-value pairs.
+    private EvaluationContext context;
 
-    private BlockNode body;
-    // private final List<String> paramNames;
-    public EvaluationContext context;
-
-    public WordyRecord(BlockNode body) {
-        this.body = body;
+    public WordyRecord() {
         this.context = new EvaluationContext();
     }
 
-    public StatementNode getBody() {
-        return body;
+    public EvaluationContext getContext() {
+        return context;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof WordyRecord) {
+            WordyRecord that = ((WordyRecord) obj);
+            return this.context.equals(that.getContext());
+        } else {
+            return false;
+        }
     }
 
     @Override
     public WordyType getType() {
         return WordyType.Record;
     }
-    
+
     @Override
     public String toString() {
-        String result = "WordyRecord(";
-        List<StatementNode> statements = body.getStatements();
-        for (StatementNode statement : statements){
-            if (statement instanceof AssignmentNode){
-                AssignmentNode assign = (AssignmentNode) statement;
-                result = result + assign.toString();
-
-            }
-            result = result + statement.toString();
+        StringBuilder builder = new StringBuilder("WordyRecord(");
+        String prefix = "";
+        for (var variableEntry : context.allVariables().entrySet()) {
+            builder.append(prefix);
+            prefix = ", ";
+            builder.append(variableEntry.getKey());
+            builder.append("=");
+            builder.append(variableEntry.getValue());
         }
-
-        return result+")"; //"WordyRecord( "+ statements.toString()+")";
+        builder.append(")");
+        return builder.toString();
     }
 
-    
+
 }

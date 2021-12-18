@@ -8,12 +8,13 @@ import wordy.ast.BinaryExpressionNode;
 import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
-import wordy.ast.FieldAssignmentNode;
+import wordy.ast.RecordRowNode;
 import wordy.ast.FunctionCallNode;
 import wordy.ast.FunctionDeclarationNode;
 import wordy.ast.FunctionReturnNode;
 import wordy.ast.LoopExitNode;
 import wordy.ast.LoopNode;
+import wordy.ast.RecordNode;
 import wordy.ast.VariableNode;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -328,17 +329,73 @@ public class WordyParserTest {
             parseStatement("return func of (a, 3, 10 divided by 2) executed"));
     }
 
+    @Test
+    void testRecordRow() {
+        assertEquals(
+            new RecordRowNode(
+                new VariableNode("sprongle"),
+                new ConstantNode(-3)),
+            parseStatement("sprongle is -3"));
+        assertEquals(
+            new RecordRowNode(
+                new VariableNode("sprongle"),
+                new BinaryExpressionNode(
+                    BinaryExpressionNode.Operator.ADDITION,
+                    new VariableNode("zoink"),
+                    new ConstantNode(7))),
+            parseStatement("sprongle is zoink plus 7"));
+    }
 
-    // @Test
-    // void testFieldAssignment() {
-    //     assertEquals(
-    //         new FieldAssignmentNode(
-    //             new FieldAccessNode("a"),
-    //             new BlockNode(new AssignmentNode(
-    //                 new VariableNode("b"),
-    //                 new ConstantNode(1)))),
-    //         parseStatement("A has: Set b to 1. End of record"));
-    // }
+    @Test
+    void testRecord() {
+        assertEquals(
+            new RecordNode(
+                new RecordRowNode(
+                    new VariableNode("a"),
+                    new ConstantNode(3))),
+            parseExpression("record where: (a is 3)"));
+        assertEquals(
+            new RecordNode(
+                new RecordRowNode(
+                    new VariableNode("a"),
+                    new ConstantNode(3)),
+                new RecordRowNode(
+                    new VariableNode("b"),
+                    new BinaryExpressionNode(
+                        BinaryExpressionNode.Operator.MULTIPLICATION,
+                        new ConstantNode(4),
+                        new ConstantNode(2)))),
+            parseExpression("record where: (a is 3, b is 4 times 2)"));
+        assertEquals(
+            new RecordNode(
+                new RecordRowNode(
+                    new VariableNode("a"),
+                    new FunctionCallNode(
+                        new VariableNode("x"),
+                        new ConstantNode(2))),
+                new RecordRowNode(
+                    new VariableNode("c"),
+                    new FunctionDeclarationNode(
+                        new FunctionReturnNode(
+                            new VariableNode("x")),
+                        new VariableNode("x")))),
+            parseExpression("record where: (a is x of (2) executed, c is function of (x) in: return x)"));
+        assertEquals(
+            new RecordNode(
+                new RecordRowNode(
+                    new VariableNode("x"),
+                    new RecordNode(
+                        new RecordRowNode(
+                            new VariableNode("y"),
+                            new ConstantNode(3)),
+                        new RecordRowNode(
+                            new VariableNode("z"),
+                            new ConstantNode(4)))),
+                new RecordRowNode(
+                    new VariableNode("a"),
+                    new ConstantNode(3))),
+            parseExpression("record where: (x is record where : (y is 3, z is 4), a is 3)"));
+    }
 
     @Test
     void testProgram() {

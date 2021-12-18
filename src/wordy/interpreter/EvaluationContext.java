@@ -18,7 +18,7 @@ import wordy.ast.values.WordyValue;
  *
  * @see wordy.compiler.WordyExecutable.ExecutionContext for the compiler counterpart to this class
  */
-public class EvaluationContext{
+public class EvaluationContext {
     private final Map<String, WordyValue> variables = new LinkedHashMap<>();
     private final Tracer tracer;
 
@@ -55,6 +55,17 @@ public class EvaluationContext{
 
     public void trace(ASTNode astNode, Tracer.Phase phase, Object result) {
         tracer.traceNode(astNode, this, phase, result);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        EvaluationContext that = (EvaluationContext) o;
+        return this.variables.equals(that.allVariables());
     }
 
     /**

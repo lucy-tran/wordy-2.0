@@ -18,7 +18,7 @@ import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
 import wordy.ast.ExpressionNode;
-import wordy.ast.FieldAssignmentNode;
+import wordy.ast.RecordRowNode;
 import wordy.ast.FunctionCallNode;
 import wordy.ast.FunctionDeclarationNode;
 import wordy.ast.FunctionReturnNode;
@@ -89,8 +89,8 @@ public class WordyParser extends BaseParser<ASTNode> {
 
     Rule Statement() {
         return FirstOf(
+            RecordRow(),
             Assignment(),
-            RecordAssignment(),
             Conditional(),
             FunctionReturn(),
             Loop(),
@@ -165,14 +165,40 @@ public class WordyParser extends BaseParser<ASTNode> {
                 (StatementNode) pop())));
     }
 
-    Rule RecordAssignment() {
+    Rule Record() {
+        Var<List<RecordRowNode>> list = new Var<>(new ArrayList<>());
         return Sequence(
-            Record(),
-            KeyPhrase("has"),
+            KeyPhrase("record where"),
             OptionalSurroundingSpace(":"),
-            Block(),
-            KeyPhrase("end of record"),
-            push(new FieldAssignmentNode((RecordNode) pop(1), (BlockNode) pop())));
+            RecordRowGroup(list),
+            push(new RecordNode(list.get())));
+    }
+
+    Rule RecordRow() {
+        return Sequence(
+            Variable(),
+            KeyPhrase("is"),
+            FirstOf(
+                Sequence(
+                    FunctionCall(),
+                    push(new RecordRowNode((VariableNode) pop(1), (FunctionCallNode) pop()))),
+                Sequence(
+                    Expression(),
+                    push(new RecordRowNode((VariableNode) pop(1), (ExpressionNode) pop())))));
+    }
+
+    Rule RecordRowGroup(Var<List<RecordRowNode>> list) {
+        return Sequence(
+            Sequence(
+                OptionalSurroundingSpace("("),
+                RecordRow(),
+                list.get().add((RecordRowNode) pop())),
+            ZeroOrMore(
+                Sequence(
+                    OptionalSurroundingSpace(","),
+                    RecordRow(),
+                    list.get().add((RecordRowNode) pop()))),
+            OptionalSurroundingSpace(")"));
     }
 
     Rule Loop() {
@@ -203,7 +229,7 @@ public class WordyParser extends BaseParser<ASTNode> {
     }
 
     Rule Expression() {
-        return FirstOf(FunctionDeclaration(), AdditiveExpression());
+        return FirstOf(FunctionDeclaration(), Record(), AdditiveExpression());
     }
 
     Rule FunctionDeclaration() {
@@ -304,16 +330,6 @@ public class WordyParser extends BaseParser<ASTNode> {
                 CharRange('A', 'Z'),
                 "_")),
             push(new VariableNode(matchOrDefault("0"))),
-            OptionalSpace());
-    }
-
-    Rule Record() {
-        return Sequence(
-            OneOrMore(FirstOf(
-                CharRange('a', 'z'),
-                CharRange('A', 'Z'),
-                "_")),
-            push(new RecordNode(matchOrDefault("0"))),
             OptionalSpace());
     }
 
