@@ -8,14 +8,19 @@ Wordy is a toy programming language for students in Programming Languages class 
 ## Functions
 **Creating a function:** We can declare a new function using 
 ```
-Set (functionName) to function of (Input values) in: (function). 
+Set <functionName> to function of (<input values separated by ','>) in: <statements>. 
+```
+
+Note that you can also return a value from the function. The return statement be preceded by other statements.
+```
+Set <functionName> to function of (<input values separated by ','>) in: return <expression>. 
 ```
 ![Alt text](/res/Function1AST.png?raw=true "Creating a function AST")
 ![Alt text](/res/Function1Interpreter.png?raw=true "Creating a function Interpreter")
 
 **Calling a function:** We can call a function using 
 ```
-(functionName) of (Input Values) executed.
+<functionName> of (<input values separated by ','>) executed.
 ```
 ![Alt text](/res/Function2AST.png?raw=true "Calling a function AST")
 ![Alt text](/res/Function2Interpreter.png?raw=true "Calling a function Interpreter")
@@ -24,7 +29,11 @@ Set (functionName) to function of (Input values) in: (function).
 ## Records
 **Creating a record:** We can create a new record using syntax as 
 ```
-(RecordName) has: (Attributes) End of record. 
+Set <recordName> to record where: (<record rows, separated by ','>)
+```
+where a record row is declared by:
+```
+<variable name> is <expression, or function call>
 ```
 ![Alt text](/res/RecordDemo.png?raw=true "Record AST")
 
