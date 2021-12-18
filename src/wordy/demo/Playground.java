@@ -67,7 +67,10 @@ public class Playground {
                 Set count to count minus 1.
             End of loop.
 
-            RecordA has: Set name to 3. Set age to 21. End of record.
+            Set me to record where:
+                (age is 20,
+                walk is function of () in: return 10,
+                hobbies is record where: (violin is 9, coding is 3)).
 
             Set minusOne to function of () in: return 1 minus 2.
 
