@@ -1,5 +1,6 @@
 # Wordy 2.0
 **Author: Lucy Tran, Apple Guo** 
+[Project write-up link](https://docs.google.com/document/d/19wVOSd1yH1TPdBy2rZNaMeV4Ra4aYI04vq4gyDHJpu0/edit?usp=sharing)
 
 Wordy is a toy programming language for students in Programming Languages class to do science to. Wordy 2.0 is an improvement upon Wordy, with the addition of functions and records.
 
