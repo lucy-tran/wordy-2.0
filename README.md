@@ -36,5 +36,6 @@ where a record row is declared by:
 <variable name> is <expression, or function call>
 ```
 ![Alt text](/res/RecordDemo.png?raw=true "Record AST")
+<img width="1001" alt="Screen Shot 2021-12-18 at 6 24 57 AM" src="https://user-images.githubusercontent.com/54861558/146640945-7871537b-9b7a-4ba1-8946-7b9d652b3a76.png">
 
 Record is not completed yet. We haven't implemented accessing the values from a record.
