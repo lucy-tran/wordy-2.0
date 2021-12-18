@@ -18,7 +18,6 @@ import wordy.ast.BlockNode;
 import wordy.ast.ConditionalNode;
 import wordy.ast.ConstantNode;
 import wordy.ast.ExpressionNode;
-import wordy.ast.FieldAccessNode;
 import wordy.ast.FieldAssignmentNode;
 import wordy.ast.FunctionCallNode;
 import wordy.ast.FunctionDeclarationNode;

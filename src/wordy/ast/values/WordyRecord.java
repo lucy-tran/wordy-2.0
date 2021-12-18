@@ -3,7 +3,6 @@ package wordy.ast.values;
 import java.util.ArrayList;
 import java.util.List;
 
-import apple.laf.JRSUIConstants.State;
 import wordy.ast.AssignmentNode;
 import wordy.ast.BlockNode;
 import wordy.ast.StatementNode;
