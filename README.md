@@ -33,7 +33,7 @@ Set <recordName> to record where: (<record rows, separated by ','>)
 ```
 where a record row is declared by:
 ```
-<variable name> is <expression, or function call>
+<variable name> is <expression>
 ```
 <img width="1000" alt="Screen Shot 2021-12-18 at 6 26 31 AM" src="https://user-images.githubusercontent.com/54861558/146640987-30e55bd3-bf85-4d67-9b7a-6c5d4d0ce9ba.png">
 
